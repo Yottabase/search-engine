@@ -9,4 +9,12 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <servlet>
+    <servlet-name>router</servlet-name>
+    <servlet-class>ui.web.core.Router</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>router</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
 </web-app>
