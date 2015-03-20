@@ -50,15 +50,21 @@ public class Router extends HttpServlet {
 		
 		Action action = null;
 		
-		//TODO non funziona
-		//action =  (Action) Class.forName(actionName).newInstance();
-		
-		if(actionName == "ui.web.searchengine.HomeAction"){
-			action = new HomeAction();
+
+		try {
+			action =  (Action) Class.forName(actionName).newInstance();
+		} catch (InstantiationException e) {
+			request.getRequestDispatcher("error-404.jsp").forward(request, response);
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			request.getRequestDispatcher("error-404.jsp").forward(request, response);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			request.getRequestDispatcher("error-404.jsp").forward(request, response);
+			e.printStackTrace();
 		}
 		
         action.run(request, response);
-        
         
 	}
 	
