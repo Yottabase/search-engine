@@ -16,7 +16,7 @@ public class HomeAction implements Action{
 		// TODO Auto-generated method stub
 		
 		
-		request.getRequestDispatcher("home3.jsp").forward(request, response);
+		request.getRequestDispatcher("view/home.jsp").forward(request, response);
 	}
 
 }

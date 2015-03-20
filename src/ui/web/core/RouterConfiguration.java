@@ -11,7 +11,6 @@ public class RouterConfiguration {
 		
 		// per aggiungere una nuova rotta copiare la riga e configurare opportunamente
 		routes.add(new Route("home", "ui.web.searchengine.HomeAction"));
-		routes.add(new Route("esempio", "ui.web.searchengine.EsempioAction"));
 		
 		return routes;
 	}
