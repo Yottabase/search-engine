@@ -4,7 +4,7 @@
 
 	<div id="search-form">
 
-		<div class="brand">
+		<div id="brand">
 			<img alt="" class="img-responsive center-block"
 				src="http://workoutweb.it/brand.png">
 		</div>
@@ -15,8 +15,9 @@
 
 					<div class="input-group">
 						<input type="text" class="form-control input-lg"
-							placeholder="Cosa vuoi cercare oggi?"> <span
-							class="input-group-btn">
+							placeholder="Cosa vuoi cercare oggi?" id="search-input"> 
+						
+						<span class="input-group-btn">
 							<button class="btn btn-primary btn-lg" type="button">
 								<span class="glyphicon glyphicon-search" aria-hidden="true"></span> Cerca
 								</button>
