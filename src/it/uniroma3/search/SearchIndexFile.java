@@ -64,6 +64,7 @@ public class SearchIndexFile {
 
 	}
 
+	/*
 	public static String spell(String queryString) throws IOException {
 
 		String suggestedQueryString = null;
@@ -78,9 +79,6 @@ public class SearchIndexFile {
 		}
 		return suggestedQueryString;
 	}
+	*/
 
-	private static Directory getIndexDir() {
-		// TODO Auto-generated method stub
-		return this.indexDir;
-	}
 }
