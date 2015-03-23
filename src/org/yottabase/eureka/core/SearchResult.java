@@ -4,20 +4,42 @@ import java.util.List;
 
 public class SearchResult {
 
-	private Integer resultsCount;
+	/**
+	 * Numero di item totali riscontrati dalla ricerca
+	 */
+	private Integer itemsCount;
 	
+	/**
+	 * Numero di pagina della ricerca
+	 */
 	private Integer page;
 	
-	private List<Snippet> snippets;
+	/**
+	 * Numero di item (reali) presenti nella pagina
+	 */
+	private Integer itemInPage;
 	
+	/**
+	 * Items della ricerca
+	 */
+	private List<WebPageSearchResult> webPageSnippets;
+	
+	/**
+	 * Elenco di possibile alternative della query (Forse cercavi)
+	 */
 	private List<String> suggestedSearch;
 
-	public Integer getResultsCount() {
-		return resultsCount;
+	/**
+	 * Numero di secondi che sono stati utilizzati per effettuare la ricerca
+	 */
+	private Double queryResponseTime;
+
+	public Integer getItemsCount() {
+		return itemsCount;
 	}
 
-	public void setResultsCount(Integer resultsCount) {
-		this.resultsCount = resultsCount;
+	public void setItemsCount(Integer itemsCount) {
+		this.itemsCount = itemsCount;
 	}
 
 	public Integer getPage() {
@@ -28,12 +50,20 @@ public class SearchResult {
 		this.page = page;
 	}
 
-	public List<Snippet> getSnippets() {
-		return snippets;
+	public Integer getItemInPage() {
+		return itemInPage;
 	}
 
-	public void setSnippets(List<Snippet> snippets) {
-		this.snippets = snippets;
+	public void setItemInPage(Integer itemInPage) {
+		this.itemInPage = itemInPage;
+	}
+
+	public List<WebPageSearchResult> getWebPageSnippets() {
+		return webPageSnippets;
+	}
+
+	public void setWebPageSnippets(List<WebPageSearchResult> webPageSnippets) {
+		this.webPageSnippets = webPageSnippets;
 	}
 
 	public List<String> getSuggestedSearch() {
@@ -42,6 +72,14 @@ public class SearchResult {
 
 	public void setSuggestedSearch(List<String> suggestedSearch) {
 		this.suggestedSearch = suggestedSearch;
+	}
+
+	public Double getQueryResponseTime() {
+		return queryResponseTime;
+	}
+
+	public void setQueryResponseTime(Double queryResponseTime) {
+		this.queryResponseTime = queryResponseTime;
 	}
 	
 	
