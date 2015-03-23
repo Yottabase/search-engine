@@ -1,4 +1,4 @@
-package org.yotabase.searchengine.core;
+package org.yottabase.eureka.core;
 
 public class Snippet {
 	
