@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.yottabase.eureka.ui.web.core.Action;
 
-public class HomeAction implements Action{
+public class SearchAction implements Action{
 	
 
 	@Override

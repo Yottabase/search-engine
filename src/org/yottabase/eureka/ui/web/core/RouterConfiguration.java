@@ -10,7 +10,7 @@ public class RouterConfiguration {
 		List<Route> routes = new ArrayList<Route>();
 		
 		// per aggiungere una nuova rotta copiare la riga e configurare opportunamente
-		routes.add(new Route("home", "org.yottabase.eureka.ui.web.action.HomeAction"));
+		routes.add(new Route("search", "org.yottabase.eureka.ui.web.action.SearchAction"));
 		
 		return routes;
 	}
