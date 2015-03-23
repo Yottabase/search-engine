@@ -22,7 +22,7 @@ public class SearchResult {
 	/**
 	 * Items della ricerca
 	 */
-	private List<WebPageSearchResult> webPageSnippets;
+	private List<WebPageSearchResult> webPages;
 	
 	/**
 	 * Elenco di possibile alternative della query (Forse cercavi)
@@ -58,12 +58,12 @@ public class SearchResult {
 		this.itemInPage = itemInPage;
 	}
 
-	public List<WebPageSearchResult> getWebPageSnippets() {
-		return webPageSnippets;
+	public List<WebPageSearchResult> getWebPages() {
+		return webPages;
 	}
 
-	public void setWebPageSnippets(List<WebPageSearchResult> webPageSnippets) {
-		this.webPageSnippets = webPageSnippets;
+	public void setWebPages(List<WebPageSearchResult> webPages) {
+		this.webPages = webPages;
 	}
 
 	public List<String> getSuggestedSearch() {
