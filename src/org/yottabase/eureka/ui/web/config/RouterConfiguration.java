@@ -13,6 +13,7 @@ public class RouterConfiguration {
 		
 		// per aggiungere una nuova rotta copiare la riga e configurare opportunamente
 		routes.add(new Route("search", "org.yottabase.eureka.ui.web.action.SearchAction"));
+		routes.add(new Route("apiSearch", "org.yottabase.eureka.ui.web.action.ApiSearchAction"));
 		
 		return routes;
 	}
