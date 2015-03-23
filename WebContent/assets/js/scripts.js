@@ -46,12 +46,16 @@ jQuery( document ).ready(function( $ ) {
 			
 			if(! hasResults){
 				hasResults = true;
-				$('#search-form').animate({
-					  marginTop: 5,
-				}, { duration: 200, queue: false });
-				$('#brand').animate({
-					  marginBottom: 10,
-				}, { duration: 200, queue: false });
+				$('#brand img').fadeOut(500, function(){
+					
+					$('#brand').animate({
+						  height: 0,
+					}, 300, function(){
+						$('#brand img').removeClass('center-block');
+						$('#brand').addClass('little');
+						$('#brand img').fadeIn(200);
+					});
+				});
 			}
 			resultsBlock.fadeIn(500);
 			

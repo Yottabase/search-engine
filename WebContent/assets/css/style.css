@@ -20,12 +20,29 @@ body{
 
 
 #brand{
-	margin-bottom: 60px;
+	padding-top: 20px;
+	height: 180px;
+}
+
+#brand.little{
+	padding-top: 0;
+	height : 95px;
+	position : absolute;
+	top: 5px;
+}
+
+#brand.little img{
+	
+	height : 95px;
 }
 
 
 #search-form{
-	margin-top: 40px;
+	
+}
+
+form{
+	margin-top: 20px;
 }
 
 #suggested-search{
