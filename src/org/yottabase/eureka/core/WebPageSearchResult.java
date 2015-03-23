@@ -29,6 +29,17 @@ public class WebPageSearchResult {
 	 * La data in cui è stato esguito il crawling della pagina
 	 */
 	private Date date;
+	
+
+	public WebPageSearchResult(String title, String snippet, String url,
+			List<String> skippedWords, Date date) {
+		this.title = title;
+		this.snippet = snippet;
+		this.url = url;
+		this.skippedWords = skippedWords;
+		this.date = date;
+	}
+	
 
 	public String getTitle() {
 		return title;
