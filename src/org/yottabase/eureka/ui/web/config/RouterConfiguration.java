@@ -1,7 +1,9 @@
-package org.yottabase.eureka.ui.web.core;
+package org.yottabase.eureka.ui.web.config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.yottabase.eureka.ui.web.core.Route;
 
 public class RouterConfiguration {
 	
