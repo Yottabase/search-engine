@@ -34,26 +34,7 @@
 				<div class="col-xs-6 col-xs-offset-3">
 		
 					<div id="results">
-					
-						<div class="web-page">
-							<div class="title"><a href="#">Prova</a></div>
-							<div class="snippet">La mia descrizione</div>
-							<div class="url"><a href="#">http://www.google.it</a></div>
-						</div>
-						
-						<div class="web-page">
-							<div class="title"><a href="#">Prova</a></div>
-							<div class="snippet">La mia descrizione</div>
-							<div class="url"><a href="#">http://www.google.it</a></div>
-						</div>
-						
-						<div class="web-page">
-							<div class="title"><a href="#">Prova</a></div>
-							<div class="snippet">La mia descrizione</div>
-							<div class="url"><a href="#">http://www.google.it</a></div>
-						</div>
-					
-					
+						<!-- qui ci vanno i risultati -->
 					</div>
 				</div>
 			</div>
