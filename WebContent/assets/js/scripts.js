@@ -11,14 +11,13 @@ jQuery( document ).ready(function( $ ) {
 			hasResults = true;
 			
 			$('#search-form').animate({
-				  marginTop: 20,
+				  marginTop: 5,
 			});
 			
 			$('#brand').animate({
-				  marginBottom: 20,
+				  marginBottom: 10,
 			});
 			
-			//alert('ciao');
 		}
 		
 		

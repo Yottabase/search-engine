@@ -27,3 +27,27 @@ body{
 #search-form{
 	margin-top: 40px;
 }
+
+#results{
+	margin-top: 10px;
+}
+
+#results .web-page{
+	margin-bottom: 23px;	
+}
+
+#results .web-page .title{
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#results .web-page .description{
+	
+}
+
+#results .web-page .url a{
+	color: #006621;
+}
+
+
+
