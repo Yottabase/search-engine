@@ -28,6 +28,16 @@ body{
 	margin-top: 40px;
 }
 
+#suggested-search{
+	margin-top: 5px;
+	font-size: 15px;
+	font-weight: bold;
+	display: none;
+}
+#suggested-search .words a{
+	margin-right: 10px;
+}
+
 #results{
 	position: relative;
 	display: none;

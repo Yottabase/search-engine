@@ -29,6 +29,8 @@ public class ApiSearchAction implements Action{
 		json.put("itemInPage", result.getItemInPage());
 		json.put("itemsCount", result.getItemsCount());
 		json.put("queryResponseTime", result.getQueryResponseTime());
+		JSONArray suggestedSearch = new JSONArray(result.getSuggestedSearch().toArray());
+		json.put("suggestedSearch", suggestedSearch);
 		
 		JSONArray items = new JSONArray();
 		json.put("webPages", items);

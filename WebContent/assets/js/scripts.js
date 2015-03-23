@@ -37,6 +37,13 @@ jQuery( document ).ready(function( $ ) {
 				
 			});
 			
+			$('#suggested-search .words').empty();
+			data.suggestedSearch.forEach(function(item){
+				$('#suggested-search .words').append('<a href="#">'+item+'</a>');
+			});
+			$('#suggested-search').show();
+			
+			
 			if(! hasResults){
 				hasResults = true;
 				$('#search-form').animate({

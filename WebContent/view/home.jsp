@@ -23,7 +23,10 @@
 								</button>
 						</span>
 					</div>
-					<!-- /input-group -->
+					<div id="suggested-search">
+						Forse cercavi <span class="words"><a href="#">Prova</a></span>
+					</div>
+						<!-- /input-group -->
 				</div>
 
 				<div class="col-xs-6"></div>

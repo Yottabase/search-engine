@@ -44,6 +44,12 @@ public class StubSearcher implements Searcher{
 		result.setItemsCount(3);
 		result.setQueryResponseTime(0.45);
 		result.setWebPages(webPages);
+		
+		List<String> suggestedSearch = new ArrayList<String>();
+		suggestedSearch.add("Alessandro Magno");
+		suggestedSearch.add("Giulio Cesare");
+		suggestedSearch.add("Christian Vadalà");
+		result.setSuggestedSearch(suggestedSearch);
 		return result;
 	}
 
