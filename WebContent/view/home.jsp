@@ -6,7 +6,7 @@
 
 		<div id="brand">
 			<img alt="" class="img-responsive center-block"
-				src="http://workoutweb.it/brand.png">
+				src="assets/images/brand.jpg">
 		</div>
 
 		<form>
