@@ -1,4 +1,4 @@
-package org.yottabase.parser;
+package org.yottabase.eureka.parser;
 
 import java.io.File;
 import java.io.FileInputStream;
