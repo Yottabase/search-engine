@@ -15,7 +15,7 @@
 
 					<div class="input-group">
 						<input type="text" class="form-control input-lg"
-							placeholder="Cosa vuoi cercare oggi?" id="search-input"> 
+							placeholder="Cosa vuoi cercare oggi?" id="search-input"  autocomplete="off"> 
 						
 						<span class="input-group-btn">
 							<button class="btn btn-primary btn-lg" type="button">
