@@ -1,4 +1,4 @@
-package ui.web.core;
+package org.yottabase.eureka.ui.web.core;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package ui.web.core;
+package org.yottabase.eureka.ui.web.core;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,8 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import ui.web.searchengine.HomeAction;
 
 
 public class Router extends HttpServlet {
@@ -38,18 +36,9 @@ public class Router extends HttpServlet {
 
 		
 		Route route = this.matchRoute(request);
-		
-		request.setAttribute("routeInfo", route);
-		
-		
 		System.out.println(route);
-		
-	
-		String actionName = "ui.web.searchengine.HomeAction";
-		System.out.println(actionName);
-		
+		String actionName = route.getAction();
 		Action action = null;
-		
 
 		try {
 			action =  (Action) Class.forName(actionName).newInstance();

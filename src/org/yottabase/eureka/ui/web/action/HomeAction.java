@@ -1,4 +1,4 @@
-package ui.web.searchengine;
+package org.yottabase.eureka.ui.web.action;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ui.web.core.Action;
+import org.yottabase.eureka.ui.web.core.Action;
 
 public class HomeAction implements Action{
 	

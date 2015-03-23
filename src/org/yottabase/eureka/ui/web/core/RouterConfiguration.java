@@ -1,4 +1,4 @@
-package ui.web.core;
+package org.yottabase.eureka.ui.web.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class RouterConfiguration {
 		List<Route> routes = new ArrayList<Route>();
 		
 		// per aggiungere una nuova rotta copiare la riga e configurare opportunamente
-		routes.add(new Route("home", "ui.web.searchengine.HomeAction"));
+		routes.add(new Route("home", "org.yottabase.eureka.ui.web.action.HomeAction"));
 		
 		return routes;
 	}
