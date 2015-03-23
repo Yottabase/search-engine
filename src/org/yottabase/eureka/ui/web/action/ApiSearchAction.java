@@ -31,9 +31,9 @@ public class ApiSearchAction implements Action{
 		json.put("queryResponseTime", result.getQueryResponseTime());
 		
 		JSONArray items = new JSONArray();
-		json.put("webPageSnippets", items);
+		json.put("webPages", items);
 		
-		for(WebPageSearchResult webPage : result.getWebPageSnippets()){
+		for(WebPageSearchResult webPage : result.getWebPages()){
 			JSONObject item = new JSONObject();
 			item.put("title", webPage.getTitle());
 			item.put("url", webPage.getUrl());

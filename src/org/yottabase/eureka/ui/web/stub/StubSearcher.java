@@ -43,7 +43,7 @@ public class StubSearcher implements Searcher{
 		result.setItemInPage(itemInPage);
 		result.setItemsCount(3);
 		result.setQueryResponseTime(0.45);
-		result.setWebPageSnippets(webPages);
+		result.setWebPages(webPages);
 		return result;
 	}
 
