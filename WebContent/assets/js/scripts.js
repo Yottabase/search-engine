@@ -33,6 +33,8 @@ jQuery( document ).ready(function( $ ) {
 			//splitta le parole della query
 			var queryWords = q.split(" ");
 			queryWords = queryWords.remove(" ");
+			queryWords = queryWords.remove("");
+			console.log(queryWords);
 			
 			//disegna nuovi blocchi
 			data.webPages.forEach(function(item){
