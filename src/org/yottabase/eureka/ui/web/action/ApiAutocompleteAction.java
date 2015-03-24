@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.yottabase.eureka.core.Searcher;
 import org.yottabase.eureka.ui.web.core.Action;
@@ -20,9 +21,13 @@ public class ApiAutocompleteAction implements Action {
 		
 		Searcher searcher = new StubSearcher();
 		List<String> suggestions = searcher.autocomplete("hello query");
+		JSONArray json = new JSONArray();
 		
-		JSONObject json = new JSONObject();
-		json.put("suggestions", suggestions);
+		for(String suggestion: suggestions){
+			JSONObject item = new JSONObject();
+			item.put("value", suggestion);
+			json.put(item);
+		}
 		
 		response.setContentType("application/json");
 		response.getWriter().write(json.toString());
