@@ -2,16 +2,11 @@ package org.yottabase.eureka.parser;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-
 import org.jsoup.Jsoup;
-import org.jsoup.examples.HtmlToPlainText;
 import org.jsoup.nodes.Document;
 import org.jwat.warc.WarcHeader;
 import org.jwat.warc.WarcRecord;
