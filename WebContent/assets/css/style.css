@@ -80,4 +80,16 @@ form{
 }
 
 
+/** typeahead **/
+span.twitter-typeahead .tt-dropdown-menu{
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+}
 
+.input-group span.twitter-typeahead .tt-dropdown-menu{
+	top: 43px !important;
+}
+
+.twitter-typeahead .tt-hint {
+  color: #ccc;
+}
