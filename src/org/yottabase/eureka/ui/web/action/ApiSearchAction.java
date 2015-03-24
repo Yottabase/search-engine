@@ -20,8 +20,13 @@ public class ApiSearchAction implements Action{
 	public void run(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		String q =  request.getParameter("q");
+		Integer page = Integer.getInteger(request.getParameter("page"));
+		//TODO aggiungere qualche controllo su q?
+		//TODO aggiungere qualche controllo su page?
+		
 		Searcher searcher = new StubSearcher();
-		SearchResult result = searcher.search("hello query", 1, 10);
+		SearchResult result = searcher.search(q, page, 10);
 		
 		JSONObject json = new JSONObject();
 		
