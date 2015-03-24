@@ -1,6 +1,6 @@
 package org.yottabase.eureka.core;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 public class WebPageSearchResult {
@@ -28,18 +28,17 @@ public class WebPageSearchResult {
 	/**
 	 * La data in cui è stato esguito il crawling della pagina
 	 */
-	private Date date;
+	private Calendar date;
 	
 
 	public WebPageSearchResult(String title, String snippet, String url,
-			List<String> skippedWords, Date date) {
+			List<String> skippedWords, Calendar date) {
 		this.title = title;
 		this.snippet = snippet;
 		this.url = url;
 		this.skippedWords = skippedWords;
 		this.date = date;
 	}
-	
 
 	public String getTitle() {
 		return title;
@@ -73,13 +72,20 @@ public class WebPageSearchResult {
 		this.skippedWords = skippedWords;
 	}
 
-	public Date getDate() {
+	public Calendar getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(Calendar date) {
 		this.date = date;
 	}
+
+	@Override
+	public String toString() {
+		return "WebPageSearchResult [title=" + title + ", snippet=" + snippet
+				+ ", url=" + url + ", date=" + date + "]";
+	}
+	
 	
 	
 }
