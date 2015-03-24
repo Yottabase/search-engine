@@ -4,22 +4,22 @@ import java.util.Date;
 import java.util.List;
 
 public class WebPageSearchResult {
-	
+
 	/**
 	 * Titolo
 	 */
 	private String title;
-	
+
 	/**
 	 * Pezzo di pagina che contiene il risultato della query
 	 */
 	private String snippet;
-	
+
 	/**
 	 * Url della pagina
 	 */
 	private String url;
-	
+
 	/**
 	 * Elenco dei termini di ricerca saltati durante la query
 	 */
@@ -29,7 +29,6 @@ public class WebPageSearchResult {
 	 * La data in cui è stato esguito il crawling della pagina
 	 */
 	private Date date;
-	
 
 	public WebPageSearchResult(String title, String snippet, String url,
 			List<String> skippedWords, Date date) {
@@ -39,7 +38,6 @@ public class WebPageSearchResult {
 		this.skippedWords = skippedWords;
 		this.date = date;
 	}
-	
 
 	public String getTitle() {
 		return title;
@@ -80,6 +78,5 @@ public class WebPageSearchResult {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
+
 }

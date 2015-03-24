@@ -31,6 +31,7 @@ public class SearchIndexFile implements Searcher {
 	private DirectoryReader reader;
 	private StandardAnalyzer analyzer;
 	private IndexSearcher searcher;
+	private SearchResult searchResultItem;
 
 	public SearchIndexFile() throws IOException {
 		this.maxHits = 10; /* set the maximum number of results */
@@ -40,6 +41,7 @@ public class SearchIndexFile implements Searcher {
 		this.searcher = new IndexSearcher(reader);
 		this.analyzer = new StandardAnalyzer(Version.LUCENE_47,
 				CharArraySet.EMPTY_SET);
+		this.searchResultItem = new SearchResult();
 
 	}
 
@@ -63,7 +65,6 @@ public class SearchIndexFile implements Searcher {
 
 		/* creo l'oggetto searchResult */
 		Date startTimeQuery = new Date();
-		SearchResult searchResultItem = new SearchResult();
 		searchResultItem.setItemsCount(hits.length);
 		searchResultItem.setPage(page);
 
@@ -79,6 +80,12 @@ public class SearchIndexFile implements Searcher {
 			 */
 			ArrayList<String> skippedWords = new ArrayList<String>();
 			skippedWords.add(new String("skipWord"));
+
+			/*
+			 * richiamo la classe per i suggerimenti
+			 */
+			ArrayList<String> suggestion = suggest.spell(query);
+			searchResultItem.setSuggestedSearch(suggestion);
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
 					d.get("title"), d.get("content").substring(0, 5),
@@ -97,8 +104,8 @@ public class SearchIndexFile implements Searcher {
 	}
 
 	@Override
-	public List<String> autocomplete(String query) {
-		// TODO Auto-generated method stub
+	public List<String> autocomplete(String query) throws IOException {
+
 		return null;
 	}
 }

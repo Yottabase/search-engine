@@ -65,6 +65,8 @@ public class Indexer {
 				Field.Store.YES));
 		doc.add(new TextField("content", source.getNextWebPage().getContent(),
 				Field.Store.YES));
+		System.out.println(source.getNextWebPage().getIndexingDate());
+
 		String data = DateTools.dateToString(source.getNextWebPage()
 				.getIndexingDate(), Resolution.DAY);
 		doc.add(new TextField("indexingDate", data, Field.Store.YES));
@@ -86,7 +88,8 @@ public class Indexer {
 				+ "   	url:" + view.getWebPages().get(0).getUrl()
 				+ "     content:" + view.getWebPages().get(0).getSnippet()
 				+ "  	item:   " + view.getItemsCount() + "  tempo:  "
-				+ view.getQueryResponseTime());
+				+ view.getQueryResponseTime() + "    suggerimenti: "
+				+ view.getSuggestedSearch());
 
 	}
 }
