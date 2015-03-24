@@ -19,8 +19,11 @@ public class ApiAutocompleteAction implements Action {
 	public void run(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		String q =  request.getParameter("q");
+		//TODO aggiungere qualche controllo su q?
+		
 		Searcher searcher = new StubSearcher();
-		List<String> suggestions = searcher.autocomplete("hello query");
+		List<String> suggestions = searcher.autocomplete(q);
 		JSONArray json = new JSONArray();
 		
 		for(String suggestion: suggestions){

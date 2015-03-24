@@ -1,5 +1,6 @@
 package org.yottabase.eureka.ui.web.stub;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,7 +71,9 @@ public class StubSearcher implements Searcher{
 		List<String> results = new ArrayList<String>();
 		
 		for(String state: states){
-			results.add(state);
+			if(state.toLowerCase().startsWith(query.toLowerCase())){
+				results.add(state);
+			}
 		}
 		
 		return results;
