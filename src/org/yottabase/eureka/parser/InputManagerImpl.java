@@ -2,10 +2,13 @@ package org.yottabase.eureka.parser;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jwat.warc.WarcHeader;
@@ -158,7 +161,22 @@ public class InputManagerImpl implements InputManager {
 		
 		if ( warcHeader != null ) {
 			webPage.setUrl(warcHeader.warcTargetUriStr);
-			webPage.setIndexingDate(warcHeader.warcDate);
+			
+			String dateString = warcHeader.warcDateStr;
+			String[] dateComps = dateString.
+					substring(0, dateString.indexOf("T")).
+					split("-");
+			String[] timeComps = dateString.
+					substring(dateString.indexOf("T") + 1, dateString.lastIndexOf("-")).
+					split(":");	
+			Calendar date = new GregorianCalendar(
+					Integer.parseInt(dateComps[0]),
+					Integer.parseInt(dateComps[1]),
+					Integer.parseInt(dateComps[2]),
+					Integer.parseInt(timeComps[0]),
+					Integer.parseInt(dateComps[1]),
+					Integer.parseInt(dateComps[2]));
+			webPage.setIndexingDate(date);
 		}
 		if ( htmlPage != null ) {
 			webPage.setTitle(htmlPage.title());
