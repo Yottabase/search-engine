@@ -1,6 +1,6 @@
 package org.yottabase.eureka.core;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class WebPage {
 
@@ -27,7 +27,7 @@ public class WebPage {
 	/**
 	 * La data in cui è stato eseguito il crawling della pagina
 	 */
-	private Date indexingDate;
+	private Calendar indexingDate;
 
 	public WebPage(String url, String title, String content,
 			String contentWithoutTags, Date indexingDate) {
@@ -70,12 +70,18 @@ public class WebPage {
 		this.contentWithoutTags = contentWithoutTags;
 	}
 
-	public Date getIndexingDate() {
+	public Calendar getIndexingDate() {
 		return indexingDate;
 	}
 
-	public void setIndexingDate(Date indexingDate) {
+	public void setIndexingDate(Calendar indexingDate) {
 		this.indexingDate = indexingDate;
 	}
+
+	@Override
+	public String toString() {
+		return "WebPage [url=" + url + ", title=" + title + ", indexingDate=" + indexingDate + "]";
+	}
+	
 
 }
