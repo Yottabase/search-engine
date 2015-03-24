@@ -36,6 +36,7 @@
 			<div class="row">
 				<div class="col-xs-6 col-xs-offset-3">
 		
+					<div id="stats"></div>
 					<div id="results">
 						<!-- qui ci vanno i risultati -->
 					</div>

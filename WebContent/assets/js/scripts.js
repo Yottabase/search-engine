@@ -18,6 +18,7 @@ jQuery( document ).ready(function( $ ) {
 			
 			console.log(data);
 			
+			$('#stats').text("Circa "+data.itemsCount+" risultati ("+data.queryResponseTime+" secondi)");
 			resultsBlock.empty();
 			resultsBlock.stop(true, true);
 			resultsBlock.fadeOut(200);

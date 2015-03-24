@@ -79,6 +79,11 @@ form{
 	color: #006621;
 }
 
+#stats{
+	color: #757575;
+	margin-top: 30px;
+}
+
 
 /** typeahead **/
 span.twitter-typeahead .tt-dropdown-menu{
