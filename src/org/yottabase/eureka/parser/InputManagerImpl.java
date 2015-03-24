@@ -79,7 +79,7 @@ public class InputManagerImpl implements InputManager {
 		String path = file.getPath();
 		
 		if ( file.isFile() ) {
-			if ( path.endsWith(".warc") || path.endsWith(".warc.gz") )
+			if ( path.endsWith(".warc") )
 				inputSources.add(path);
 		} else {
 			File[] children = file.listFiles();
