@@ -68,6 +68,12 @@ public class WebPage {
 	public void setIndexingDate(Date indexingDate) {
 		this.indexingDate = indexingDate;
 	}
+
+	@Override
+	public String toString() {
+		return "WebPage [url=" + url + ", title=" + title + ", indexingDate=" + indexingDate + "]";
+	}
+	
 	
 	
 	

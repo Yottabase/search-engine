@@ -80,6 +80,14 @@ public class WebPageSearchResult {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
+
+	@Override
+	public String toString() {
+		return "WebPageSearchResult [title=" + title + ", snippet=" + snippet
+				+ ", url=" + url + ", date=" + date + "]";
+	}
+	
 	
 	
 }
