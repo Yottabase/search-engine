@@ -1,36 +1,40 @@
-package it.uniroma3.index;
+package org.yottabase.eureka.indexer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.yottabase.eureka.core.InputManagerFake;
+import org.yottabase.eureka.core.SearchResult;
+import org.yottabase.eureka.searcher.SearchIndexFile;
 
 public class Indexer {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException,
+			java.text.ParseException {
 		boolean create = false;
 		String path = "indexDataset";
-		File sourcePath = new File("a/b");
+		InputManagerFake source = new InputManagerFake();
 
 		/* create a standard analyzer */
 		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_47,
 				CharArraySet.EMPTY_SET);
 
-		/* create the index in the pathToFolder or in RAM (choose one) */
+		/* create the index in the pathToFolder */
 		Directory index = FSDirectory.open(new File(path));
 
 		/* set an index congif */
@@ -45,81 +49,44 @@ public class Indexer {
 
 		/* create the writer */
 		IndexWriter writer = new IndexWriter(index, config);
-		indexDocs(writer, sourcePath);
+
+		// create the document adding the fields
+		Document doc = new Document();
 
 		/*
-		 * create the document adding the fields Document doc = new Document();
-		 * 
-		 * doc.add(new StringField("url", url, Field.Store.YES));
-		 * 
-		 * doc.add(new TextField("body", textdoc, Field.Store.YES));
-		 * 
-		 * writer.addDocument(doc);
-		 * 
-		 * writer.close();
+		 * ciclo while da abilitare successivamente
 		 */
-	}
+		// while (source.getNextWebPage() != null) {
 
-	static void indexDocs(IndexWriter writer, File file) throws IOException {
-		// do not try to index files that cannot be read
-		if (file.canRead()) {
+		doc.add(new StringField("url", source.getNextWebPage().getUrl(),
+				Field.Store.YES));
 
-			if (file.isDirectory()) {
-				String[] files = file.list();
-				// an IO error could occur
-				if (files != null) {
-					for (int i = 0; i < files.length; i++) {
-						indexDocs(writer, new File(file, files[i]));
-					}
-				}
-			}
+		doc.add(new TextField("title", source.getNextWebPage().getTitle(),
+				Field.Store.YES));
+		doc.add(new TextField("content", source.getNextWebPage().getContent(),
+				Field.Store.YES));
+		String data = DateTools.dateToString(source.getNextWebPage()
+				.getIndexingDate(), Resolution.DAY);
+		doc.add(new TextField("indexingDate", data, Field.Store.YES));
 
-			else {
+		writer.addDocument(doc);
+		// }
 
-				try {
-					// vedi lavoro leonardo
-					Map<String, String> field2info = null;
+		writer.close();
 
-					// make a new, empty document
-					Document doc = new Document();
+		/*
+		 * richiamo la classe SearchIndex per testare il funzionamento
+		 * successivamente sarà sostituita dalla chiamata del controller
+		 */
+		SearchIndexFile search = new SearchIndexFile();
+		SearchResult view = new SearchResult();
 
-					/**
-					 * Field title
-					 */
+		view = search.search("prova", 1, 1);
+		System.out.println("title:" + view.getWebPages().get(0).getTitle()
+				+ "   	url:" + view.getWebPages().get(0).getUrl()
+				+ "     content:" + view.getWebPages().get(0).getSnippet()
+				+ "  	item:   " + view.getItemsCount() + "  tempo:  "
+				+ view.getQueryResponseTime());
 
-					Field titleField = new TextField("title",
-							field2info.get("title"), Field.Store.YES);
-
-					Field pathField = new StringField("path", file.getPath(),
-							Field.Store.YES);
-
-					FieldType type = new FieldType();
-					type.setIndexed(true);
-					type.setStored(true);
-					type.setStoreTermVectors(true);
-					type.setTokenized(true);
-					type.setStoreTermVectorOffsets(true);
-					Field highlighterField = new Field("highlighterWords",
-							field2info.get("text"), type); // with term vector
-															// enabled
-
-					Field contentsField = new TextField("words",
-							field2info.get("text"), Field.Store.YES);
-
-					doc.add(pathField);
-					doc.add(titleField);
-					doc.add(contentsField);
-					doc.add(highlighterField);
-
-					if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-						writer.addDocument(doc);
-					} else {
-						writer.updateDocument(new Term("path", file.getPath()),
-								doc);
-					}
-				} finally {
-				}
-			}
-		}
 	}
 }
