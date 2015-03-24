@@ -1,7 +1,7 @@
 package org.yottabase.eureka.ui.web.stub;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.yottabase.eureka.core.SearchResult;
@@ -19,7 +19,7 @@ public class StubSearcher implements Searcher{
 			"Ciao sono uno snippet", 
 			"http://www.google.it", 
 			new ArrayList<String>(),
-			new Date()
+			new GregorianCalendar(2012,10,1)
 		));
 		
 		webPages.add(new WebPageSearchResult(
@@ -27,7 +27,7 @@ public class StubSearcher implements Searcher{
 			"Ciao sono un professor snippet ", 
 			"http://www.google.it/leonardo.proff", 
 			new ArrayList<String>(),
-			new Date()
+			new GregorianCalendar(1015,12,4)
 		));
 		
 		webPages.add(new WebPageSearchResult(
@@ -35,7 +35,7 @@ public class StubSearcher implements Searcher{
 			"Ciao sono uno snippet assistente del proff Leonardo", 
 			"http://www.google.it/leonardo.proff/alessandro", 
 			new ArrayList<String>(),
-			new Date()
+			new GregorianCalendar(2013,2,54)
 		));
 		
 		SearchResult result = new SearchResult();
