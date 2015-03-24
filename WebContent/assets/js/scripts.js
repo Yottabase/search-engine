@@ -14,6 +14,8 @@ jQuery( document ).ready(function( $ ) {
 	
 	$('#search-input').on('input', function(){
 		
+		var q = $(this).val();
+		
 		$.get("apiSearch.do", function( data ) {
 			
 			console.log(data);
@@ -28,15 +30,30 @@ jQuery( document ).ready(function( $ ) {
 			//aggiorna statistiche
 			$('#stats').text("Circa "+data.itemsCount+" risultati ("+data.queryResponseTime+" secondi)");
 			
+			//splitta le parole della query
+			var queryWords = q.split(" ");
+			queryWords = queryWords.remove(" ");
+			
 			//disegna nuovi blocchi
 			data.webPages.forEach(function(item){
+				
+				//mette in grassetto le parole degli snippets presenti nella query
+				var snippet = item.snippet;
+				queryWords.forEach(function(w){
+					snippet = highlightWords(snippet, w);
+				});
+				
+				//crea item di output
 				var resultBlock = webPageTemplate.clone();
 				resultBlock.find('.title a').text(item.title);
-				resultBlock.find('.snippet').text(item.snippet);
+				resultBlock.find('.snippet').html(snippet);
 				resultBlock.find('.url a').text(item.url);
 				resultBlock.find('a').prop('href',item.url);
+				
 				resultsBlock.append(resultBlock);
 			});
+			
+			
 			
 			//aggiunge parole suggerite
 			data.suggestedSearch.forEach(function(item){
@@ -85,3 +102,24 @@ jQuery( document ).ready(function( $ ) {
 	});
 	//end TYPEAHEAD
 });
+
+/*** funzione per highlightWords ***/
+function highlightWords( line, word )
+{
+     var regex = new RegExp( '(' + word + ')', 'gi' );
+     return line.replace( regex, "<strong>$1</strong>" );
+}
+
+/*** funzione che rimuove elementi da un array ***/
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
+
+//END
