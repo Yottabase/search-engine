@@ -14,8 +14,6 @@ jQuery( document ).ready(function( $ ) {
 	
 	$('#search-input').on('input', function(){
 		
-		console.log("query:" + $(this).val());
-		
 		$.get("apiSearch.do", function( data ) {
 			
 			console.log(data);
@@ -33,7 +31,7 @@ jQuery( document ).ready(function( $ ) {
 				resultBlock.find('a').prop('href',item.url);
 				
 				resultsBlock.append(resultBlock);
-				console.log(resultBlock.html());
+				
 				
 			});
 			
