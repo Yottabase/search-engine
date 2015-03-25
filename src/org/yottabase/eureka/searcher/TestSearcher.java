@@ -15,10 +15,13 @@ public class TestSearcher {
 		 */
 
 		IndexSearch searcher = new IndexSearch();
-		SearchResult view = new SearchResult();
+		SearchResult result = new SearchResult();
 
-		view = searcher.search("the", 1, 1);
-		for (WebPageSearchResult page : view.getWebPages())
+		result = searcher.search("the", 1, 1);
+		
+		System.out.println(result.getItemsCount() + " risultati\n");
+		System.out.println("Suggested searches: " + result.getSuggestedSearch().toString() + "\n");
+		for (WebPageSearchResult page : result.getWebPages())
 			System.out.println( page.toString() + "\n" );
 	}
 }

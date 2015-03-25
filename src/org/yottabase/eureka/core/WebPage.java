@@ -3,6 +3,11 @@ package org.yottabase.eureka.core;
 import java.util.Calendar;
 
 public class WebPage {
+	
+	public final static String URL = "url";
+	public final static String TITLE = "title";
+	public final static String CONTENT = "content";
+	public final static String INDEXING_DATE = "indexingDate";
 
 	/**
 	 * Url della pagina

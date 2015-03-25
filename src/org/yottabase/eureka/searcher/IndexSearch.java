@@ -22,6 +22,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.Searcher;
+import org.yottabase.eureka.core.WebPage;
 import org.yottabase.eureka.core.WebPageSearchResult;
 
 public class IndexSearch implements Searcher {
@@ -34,7 +35,7 @@ public class IndexSearch implements Searcher {
 	private SearchResult searchResultItem;
 
 	public IndexSearch() throws IOException {
-		this.maxHits = 10; /* set the maximum number of results */
+		this.maxHits = 100; /* set the maximum number of results */
 		this.indexPath = "index"; // da modificare
 		this.indexDir = FSDirectory.open(new File(indexPath));
 		this.reader = DirectoryReader.open(indexDir);
@@ -51,7 +52,9 @@ public class IndexSearch implements Searcher {
 
 		TopScoreDocCollector collector = TopScoreDocCollector.create( this.maxHits, true);
 
-		QueryParser qp = new QueryParser(Version.LUCENE_47, "title",this.analyzer);
+		
+		//QueryParser qp = createQuery(query);
+		QueryParser qp = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, this.analyzer);
 		/* query string */
 		Query q = qp.parse(query);
 
@@ -61,7 +64,7 @@ public class IndexSearch implements Searcher {
 
 		/* creo l'oggetto searchResult */
 		long startTimeQuery = System.currentTimeMillis();
-		searchResultItem.setItemsCount(hits.length);
+		searchResultItem.setItemsCount( hits.length );
 		searchResultItem.setPage(page);
 
 		ArrayList<WebPageSearchResult> ListWebPages = new ArrayList<WebPageSearchResult>();
@@ -85,7 +88,8 @@ public class IndexSearch implements Searcher {
 			searchResultItem.setSuggestedSearch(suggestion);
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
-					doc.get("title"), doc.get("content").substring(0, 30),
+					doc.get("title"), 
+					doc.get("content").substring(0, 30),
 					doc.get("url"), skippedWords, data);
 			ListWebPages.add(webPageSearchResult);
 
@@ -97,6 +101,12 @@ public class IndexSearch implements Searcher {
 
 		return searchResultItem;
 
+	}
+	
+	private QueryParser createQuery(String query) {
+		
+		
+		return null;
 	}
 
 	@Override
