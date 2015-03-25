@@ -27,7 +27,7 @@ public class SearchResult {
 	/**
 	 * Elenco di possibile alternative della query (Forse cercavi)
 	 */
-	private List<String> suggestedSearch;
+	private List<String> suggestedSearches;
 
 	/**
 	 * Numero di secondi che sono stati utilizzati per effettuare la ricerca
@@ -67,11 +67,11 @@ public class SearchResult {
 	}
 
 	public List<String> getSuggestedSearch() {
-		return suggestedSearch;
+		return suggestedSearches;
 	}
 
 	public void setSuggestedSearch(List<String> suggestedSearch) {
-		this.suggestedSearch = suggestedSearch;
+		this.suggestedSearches = suggestedSearch;
 	}
 
 	public Double getQueryResponseTime() {

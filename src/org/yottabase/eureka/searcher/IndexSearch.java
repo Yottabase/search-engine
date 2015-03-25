@@ -2,9 +2,9 @@ package org.yottabase.eureka.searcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -26,87 +26,89 @@ import org.yottabase.eureka.core.WebPage;
 import org.yottabase.eureka.core.WebPageSearchResult;
 
 public class IndexSearch implements Searcher {
-	private int maxHits;
+	private int maxHits;					// TODO NON DOVREBBE ESSERE UN LONG?
 	private String indexPath;
 	private Directory indexDir;
 	private DirectoryReader reader;
 	private StandardAnalyzer analyzer;
 	private IndexSearcher searcher;
-	private SearchResult searchResultItem;
+	private SearchResult searchResultItem;	// TODO SearchResult NON E' UN ITEM: PERCHE' SI CHIAMA COSI??!
 
 	public IndexSearch() throws IOException {
-		this.maxHits = 100; /* set the maximum number of results */
-		this.indexPath = "index"; // da modificare
+		this.maxHits = 100; 				// set the maximum number of results */
+		this.indexPath = "index"; 			// TODO DA MODIFICARE
 		this.indexDir = FSDirectory.open(new File(indexPath));
-		this.reader = DirectoryReader.open(indexDir);
-		this.searcher = new IndexSearcher(reader);
-		this.analyzer = new StandardAnalyzer(Version.LUCENE_47,CharArraySet.EMPTY_SET);
+		this.reader = DirectoryReader.open( indexDir );
+		this.searcher = new IndexSearcher( reader );
+		this.analyzer = new StandardAnalyzer(Version.LUCENE_47, CharArraySet.EMPTY_SET);
 		this.searchResultItem = new SearchResult();
-
 	}
 
 	@Override
-	public SearchResult search(String query, Integer page, Integer itemInPage) throws IOException, ParseException, java.text.ParseException {
-
-		/* open a directory reader and create searcher and topdocs */
-
-		TopScoreDocCollector collector = TopScoreDocCollector.create( this.maxHits, true);
-
+	public SearchResult search(String queryStr, Integer page, Integer itemInPage) 
+			throws IOException, ParseException, java.text.ParseException {
 		
-		//QueryParser qp = createQuery(query);
-		QueryParser qp = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, this.analyzer);
-		/* query string */
-		Query q = qp.parse(query);
+		long startTimeQuery, endTimeQuery;
+		double queryTime;
+		
+		// open a directory reader and create searcher and topdocs
+		TopScoreDocCollector collector = TopScoreDocCollector.create( maxHits, true);
+		
+		// TODO Unire ricerca in content, title (e url ?)
+		QueryParser queryParser = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, analyzer);
+		Query query = queryParser.parse( queryStr );
 
 		/* search into the index */
-		searcher.search(q, collector);
+		searcher.search(query, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-		/* creo l'oggetto searchResult */
-		long startTimeQuery = System.currentTimeMillis();
-		searchResultItem.setItemsCount( hits.length );
-		searchResultItem.setPage(page);
+		// TODO DEVE ESSERE ALL'INIZIO DELLA SOTTOPOSIZIONE DELLA QUERY
+		startTimeQuery = System.currentTimeMillis();
 
-		ArrayList<WebPageSearchResult> ListWebPages = new ArrayList<WebPageSearchResult>();
+		// TODO SearchResult DOVREBBE AVERE UN COSTRUTTORE NO-ARG CHE INIZIALIZZA QUESTA LISTA
+		List<WebPageSearchResult> webPagesList = new LinkedList<WebPageSearchResult>();
 
-		for (int i = 0; i < hits.length; ++i) {
+		for (ScoreDoc hit : hits) {
+			Document doc = searcher.doc( hit.doc );
+			
+			// VEDI PENULTIMO COMMENTO NEL METODO
+			Calendar date = new GregorianCalendar();
+			date.setTimeInMillis( Long.parseLong(doc.get(WebPage.INDEXING_DATE)) );
+			
+			// TODO STATICO: DA IMPLEMENTARE (non qui)
+			List<String> skippedWords = new LinkedList<String>();
+			skippedWords.add( "skipWord" );
 
-			int docId = hits[i].doc;
-			Document doc = searcher.doc(docId);
-			Calendar data = new GregorianCalendar();
-			data.setTimeInMillis(Long.parseLong(doc.get("indexingDate")));
-			/*
-			 * adesso passo il content dovro passare i snippet della ricerca
-			 */
-			ArrayList<String> skippedWords = new ArrayList<String>();
-			skippedWords.add(new String("skipWord"));
-
-			/*
-			 * richiamo la classe per i suggerimenti
-			 */
-			ArrayList<String> suggestion = Suggest.spell(query);
-			searchResultItem.setSuggestedSearch(suggestion);
+			// TODO I SUGGERIMENTI NON FUNZIONANO
+			List<String> suggestions = Suggest.spell(queryStr);
+			// TODO VENGONO SETTATI I SUGGERIMENTI SOLO RELATIVI ALL'ULTIMA QUERY 
+			//		(VEDI PENULTIMO COMMENTO DENTRO IL FOR)
+			searchResultItem.setSuggestedSearch( suggestions );
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
-					doc.get("title"), 
-					doc.get("content").substring(0, 30),
-					doc.get("url"), skippedWords, data);
-			ListWebPages.add(webPageSearchResult);
+					doc.get(WebPage.TITLE), 
+					doc.get(WebPage.CONTENT).substring(0, 30),	// DRAMMA
+					doc.get(WebPage.URL), 
+					skippedWords, 	// STATICO...
+					date);			// QUI: O TUTTO O NIENTE!
+			webPagesList.add(webPageSearchResult);
 
-			searchResultItem.setWebPages(ListWebPages);
+			// TODO SearchResult DOVREBBE AVERE DIRETTAMENTE UN METODO "addWebSearchResult"
+			// 		COSI' COME UN METODO "addSuggestedSearch"
+			// TODO MODIFICA QUINDI ANCHE PASSAGGIO SUBITO PRECEDENTE
+			searchResultItem.setWebPages(webPagesList);
 		}
-		long EndTimeQuery = System.currentTimeMillis();
-		searchResultItem
-				.setQueryResponseTime((double) ((EndTimeQuery - startTimeQuery)) / 1000d);
+		// TODO DEVE ESSERE AL PUNTO DI RISPOSTA DELLA QUERY
+		endTimeQuery = System.currentTimeMillis();
+		queryTime = (endTimeQuery - startTimeQuery) / 1000d;
+		
+		// TUTTI (o quasi) GLI ATTRIBUTI DI SearchResult SETTATI QUI (o all'inizio, ma insieme)
+		searchResultItem.setItemsCount( hits.length );
+		searchResultItem.setPage( page );
+		searchResultItem.setQueryResponseTime( queryTime );
+		// TODO MANCA IL SETTING DI ALCUNI ATTRIBUTI (e.g.: itemInPage ? )
 
 		return searchResultItem;
-
-	}
-	
-	private QueryParser createQuery(String query) {
-		
-		
-		return null;
 	}
 
 	@Override
@@ -114,4 +116,5 @@ public class IndexSearch implements Searcher {
 
 		return null;
 	}
+	
 }
