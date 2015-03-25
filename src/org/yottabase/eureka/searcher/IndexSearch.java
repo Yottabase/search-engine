@@ -54,7 +54,7 @@ public class IndexSearch implements Searcher {
 		// open a directory reader and create searcher and topdocs
 		TopScoreDocCollector collector = TopScoreDocCollector.create( maxHits, true);
 		
-		// TODO Unire ricerca in content, title (e url ?)
+		// TODO UNIRE RICERCA IN TITLE, CONTENT (E URL?)
 		QueryParser queryParser = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, analyzer);
 		Query query = queryParser.parse( queryStr );
 
@@ -79,10 +79,9 @@ public class IndexSearch implements Searcher {
 			List<String> skippedWords = new LinkedList<String>();
 			skippedWords.add( "skipWord" );
 
+			// TODO FUORI DAL FOR! (IN BASSO, ASSIEME AL RESTO)
 			// TODO I SUGGERIMENTI NON FUNZIONANO
 			List<String> suggestions = Suggest.spell(queryStr);
-			// TODO VENGONO SETTATI I SUGGERIMENTI SOLO RELATIVI ALL'ULTIMA QUERY 
-			//		(VEDI PENULTIMO COMMENTO DENTRO IL FOR)
 			searchResultItem.setSuggestedSearch( suggestions );
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
