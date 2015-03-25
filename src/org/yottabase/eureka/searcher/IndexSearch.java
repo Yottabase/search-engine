@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -25,7 +24,7 @@ import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.Searcher;
 import org.yottabase.eureka.core.WebPageSearchResult;
 
-public class SearchIndexFile implements Searcher {
+public class IndexSearch implements Searcher {
 	private int maxHits;
 	private String indexPath;
 	private Directory indexDir;
@@ -34,9 +33,9 @@ public class SearchIndexFile implements Searcher {
 	private IndexSearcher searcher;
 	private SearchResult searchResultItem;
 
-	public SearchIndexFile() throws IOException {
+	public IndexSearch() throws IOException {
 		this.maxHits = 10; /* set the maximum number of results */
-		this.indexPath = "indexDataset"; // da modificare
+		this.indexPath = "index"; // da modificare
 		this.indexDir = FSDirectory.open(new File(indexPath));
 		this.reader = DirectoryReader.open(indexDir);
 		this.searcher = new IndexSearcher(reader);
@@ -86,7 +85,7 @@ public class SearchIndexFile implements Searcher {
 			searchResultItem.setSuggestedSearch(suggestion);
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
-					doc.get("title"), doc.get("content").substring(0, 10),
+					doc.get("title"), doc.get("content").substring(0, 30),
 					doc.get("url"), skippedWords, data);
 			ListWebPages.add(webPageSearchResult);
 

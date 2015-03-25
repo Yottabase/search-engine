@@ -15,12 +15,12 @@ public class WebPage {
 	private String title;
 
 	/**
-	 * Pagina senza tag html
+	 * Body della pagina html
 	 */
 	private String content;
 
 	/**
-	 * Pagina senza tag html
+	 * Body della pagina html senza tags
 	 */
 	private String contentWithoutTags;
 

@@ -80,8 +80,6 @@ public class SearchResult {
 
 	public void setQueryResponseTime(Double queryResponseTime) {
 		this.queryResponseTime = queryResponseTime;
-	}
-	
-	
+	}	
 	
 }

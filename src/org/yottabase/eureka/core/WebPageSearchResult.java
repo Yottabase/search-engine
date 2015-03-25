@@ -71,6 +71,7 @@ public class WebPageSearchResult {
 		this.skippedWords = skippedWords;
 	}
 
+
 	public Calendar getDate() {
 		return date;
 	}
@@ -81,8 +82,12 @@ public class WebPageSearchResult {
 
 	@Override
 	public String toString() {
-		return "WebPageSearchResult [title=" + title + ", snippet=" + snippet
-				+ ", url=" + url + ", date=" + date + "]";
+		return "WebPageSearchResult" + "\n" +
+				"\t" + "TITLE" + "\t\t" + title + "\n" +
+				"\t" + "SNIPPET" + "\t\t" + snippet + "\n" +
+				"\t" + "SKIPPED" + "\t\t" + skippedWords + "\n" +
+				"\t" + "URL" + "\t\t" + url + "\n" +
+				"\t" + "DATE" + "\t\t" + date.getTime().toString();
 	}
 	
 

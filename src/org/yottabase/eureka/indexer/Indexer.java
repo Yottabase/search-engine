@@ -14,20 +14,18 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.yottabase.eureka.core.InputManager;
-import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.WebPage;
 import org.yottabase.eureka.parser.InputManagerImpl;
-import org.yottabase.eureka.searcher.SearchIndexFile;
 
 public class Indexer {
 	
-
-	public static void main(String[] args) throws IOException, ParseException, java.text.ParseException {
+	public static void main(String[] args) throws IOException, ParseException {
 		String outputPath;
 		List<String> inputPaths;
 		InputManager iManager;
@@ -40,43 +38,43 @@ public class Indexer {
 		Document doc;
 		WebPage webPage;
 		
+		long start, end, pages;
+		double time;
+		
 		
 		inputPaths = new LinkedList<String>();
 		inputPaths.add( args[0] );
 //		inputPaths.add( args[1] );
 		iManager = new InputManagerImpl( inputPaths );
 		
-		outputPath = "indexDataset";
+		outputPath = "index";
 
 		index = FSDirectory.open( new File(outputPath) );
 		analyzer = new StandardAnalyzer(Version.LUCENE_47, CharArraySet.EMPTY_SET);
-		config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
-		
+		config = ( new IndexWriterConfig(Version.LUCENE_47, analyzer) ).setOpenMode(OpenMode.CREATE);
 		writer = new IndexWriter(index, config);
 
+		System.out.println("Index creation...\n");
+		pages = 0;
+		start = System.currentTimeMillis();
+		
 		while ( (webPage = iManager.getNextWebPage()) != null ) {
 			doc = new Document();
 			doc.add(new StringField("url", webPage.getUrl(), Field.Store.YES));
 			doc.add(new TextField("title", webPage.getTitle(), Field.Store.YES));
-			doc.add(new TextField("content", webPage.getContent(), Field.Store.YES));
+			doc.add(new TextField("content", webPage.getContentWithoutTags(), Field.Store.YES));
 			doc.add(new LongField("indexingDate", webPage.getIndexingDate().getTimeInMillis(), Field.Store.YES));
 
 			writer.addDocument(doc);
+			pages++;
 		}
 		
-		writer.close();
+		end = System.currentTimeMillis();
+		time = (end - start) / 1000d;
+		System.out.println("Creation completed!");
+		System.out.println(pages + " pages indexed in " + time + " seconds.");
 		
-		SearchIndexFile search = new SearchIndexFile();
-		SearchResult view = new SearchResult();
-
-		view = search.search("ale", 1, 1);
-		System.out.println("title:" + view.getWebPages().get(0).getTitle()
-				+ "   	url:" + view.getWebPages().get(0).getUrl()
-				+ "     content:" + view.getWebPages().get(0).getSnippet()
-				+ "  	item:   " + view.getItemsCount() + "  tempo:  "
-				+ view.getQueryResponseTime() + "    suggerimenti: "
-				+ view.getSuggestedSearch());
-
+		writer.close();
 	}
 	
 }

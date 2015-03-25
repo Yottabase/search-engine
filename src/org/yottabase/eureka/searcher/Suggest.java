@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -18,7 +16,7 @@ public class Suggest {
 		// String suggestedQueryString = null;
 		ArrayList<String> similarWords = new ArrayList<String>();
 
-		Directory indexDir = FSDirectory.open(new File("indexDataset"));
+		Directory indexDir = FSDirectory.open(new File("index"));
 		@SuppressWarnings("resource")
 		SpellChecker spellChecker = new SpellChecker(indexDir);
 

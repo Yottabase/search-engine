@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.yottabase.eureka.core.SearchResult;
+import org.yottabase.eureka.core.WebPageSearchResult;
 
 public class TestSearcher {
 
@@ -13,16 +14,11 @@ public class TestSearcher {
 		 * successivamente sarà sostituita dalla chiamata del controller
 		 */
 
-		SearchIndexFile search = new SearchIndexFile();
+		IndexSearch searcher = new IndexSearch();
 		SearchResult view = new SearchResult();
 
-		view = search.search("ale", 1, 1);
-		System.out.println("title:" + view.getWebPages().get(0).getTitle()
-				+ "   	url:" + view.getWebPages().get(0).getUrl()
-				+ "     content:" + view.getWebPages().get(0).getSnippet()
-				+ "  	item:   " + view.getItemsCount() + "  tempo:  "
-				+ view.getQueryResponseTime() + "    suggerimenti: "
-				+ view.getSuggestedSearch());
-
+		view = searcher.search("the", 1, 1);
+		for (WebPageSearchResult page : view.getWebPages())
+			System.out.println( page.toString() + "\n" );
 	}
 }
