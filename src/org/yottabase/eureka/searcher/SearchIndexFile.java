@@ -40,23 +40,19 @@ public class SearchIndexFile implements Searcher {
 		this.indexDir = FSDirectory.open(new File(indexPath));
 		this.reader = DirectoryReader.open(indexDir);
 		this.searcher = new IndexSearcher(reader);
-		this.analyzer = new StandardAnalyzer(Version.LUCENE_47,
-				CharArraySet.EMPTY_SET);
+		this.analyzer = new StandardAnalyzer(Version.LUCENE_47,CharArraySet.EMPTY_SET);
 		this.searchResultItem = new SearchResult();
 
 	}
 
 	@Override
-	public SearchResult search(String query, Integer page, Integer itemInPage)
-			throws IOException, ParseException, java.text.ParseException {
+	public SearchResult search(String query, Integer page, Integer itemInPage) throws IOException, ParseException, java.text.ParseException {
 
 		/* open a directory reader and create searcher and topdocs */
 
-		TopScoreDocCollector collector = TopScoreDocCollector.create(
-				this.maxHits, true);
+		TopScoreDocCollector collector = TopScoreDocCollector.create( this.maxHits, true);
 
-		QueryParser qp = new QueryParser(Version.LUCENE_47, "title",
-				this.analyzer);
+		QueryParser qp = new QueryParser(Version.LUCENE_47, "title",this.analyzer);
 		/* query string */
 		Query q = qp.parse(query);
 
@@ -76,7 +72,7 @@ public class SearchIndexFile implements Searcher {
 			int docId = hits[i].doc;
 			Document doc = searcher.doc(docId);
 			Calendar data = new GregorianCalendar();
-			data.setTimeInMillis(Long.getLong(doc.get("indexingDate")));
+			data.setTimeInMillis(Long.parseLong(doc.get("indexingDate")));
 			/*
 			 * adesso passo il content dovro passare i snippet della ricerca
 			 */
@@ -86,7 +82,7 @@ public class SearchIndexFile implements Searcher {
 			/*
 			 * richiamo la classe per i suggerimenti
 			 */
-			ArrayList<String> suggestion = suggest.spell(query);
+			ArrayList<String> suggestion = Suggest.spell(query);
 			searchResultItem.setSuggestedSearch(suggestion);
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
