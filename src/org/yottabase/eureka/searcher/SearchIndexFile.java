@@ -3,12 +3,13 @@ package org.yottabase.eureka.searcher;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
-import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
@@ -64,7 +65,7 @@ public class SearchIndexFile implements Searcher {
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
 		/* creo l'oggetto searchResult */
-		Date startTimeQuery = new Date();
+		long startTimeQuery = System.currentTimeMillis();
 		searchResultItem.setItemsCount(hits.length);
 		searchResultItem.setPage(page);
 
@@ -73,8 +74,9 @@ public class SearchIndexFile implements Searcher {
 		for (int i = 0; i < hits.length; ++i) {
 
 			int docId = hits[i].doc;
-			Document d = searcher.doc(docId);
-			Date data = DateTools.stringToDate(d.get("indexingDate"));
+			Document doc = searcher.doc(docId);
+			Calendar data = new GregorianCalendar();
+			data.setTimeInMillis(Long.getLong(doc.get("indexingDate")));
 			/*
 			 * adesso passo il content dovro passare i snippet della ricerca
 			 */
@@ -88,16 +90,15 @@ public class SearchIndexFile implements Searcher {
 			searchResultItem.setSuggestedSearch(suggestion);
 
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
-					d.get("title"), d.get("content").substring(0, 5),
-					d.get("url"), skippedWords, data);
+					doc.get("title"), doc.get("content").substring(0, 10),
+					doc.get("url"), skippedWords, data);
 			ListWebPages.add(webPageSearchResult);
 
 			searchResultItem.setWebPages(ListWebPages);
 		}
-		Date EndTimeQuery = new Date();
+		long EndTimeQuery = System.currentTimeMillis();
 		searchResultItem
-				.setQueryResponseTime((double) (EndTimeQuery.getTime() - startTimeQuery
-						.getTime()));
+				.setQueryResponseTime((double) ((EndTimeQuery - startTimeQuery)) / 1000d);
 
 		return searchResultItem;
 

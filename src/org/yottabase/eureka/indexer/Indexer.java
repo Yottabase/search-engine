@@ -5,10 +5,9 @@ import java.io.IOException;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
-import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -67,9 +66,13 @@ public class Indexer {
 				Field.Store.YES));
 		System.out.println(source.getNextWebPage().getIndexingDate());
 
-		String data = DateTools.dateToString(source.getNextWebPage()
-				.getIndexingDate(), Resolution.DAY);
-		doc.add(new TextField("indexingDate", data, Field.Store.YES));
+		// String data =
+		// DateTools.dateToString(source.getNextWebPage().getIndexingDate().getTime(),
+		// Resolution.DAY);
+
+		long data = source.getNextWebPage().getIndexingDate().getTimeInMillis();
+
+		doc.add(new LongField("indexingDate", data, Field.Store.YES));
 
 		writer.addDocument(doc);
 		// }

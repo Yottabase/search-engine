@@ -29,15 +29,6 @@ public class WebPage {
 	 */
 	private Calendar indexingDate;
 
-	public WebPage(String url, String title, String content,
-			String contentWithoutTags, Date indexingDate) {
-		this.url = url;
-		this.title = title;
-		this.content = content;
-		this.contentWithoutTags = contentWithoutTags;
-		this.indexingDate = indexingDate;
-	}
-
 	public String getUrl() {
 		return url;
 	}
@@ -80,8 +71,8 @@ public class WebPage {
 
 	@Override
 	public String toString() {
-		return "WebPage [url=" + url + ", title=" + title + ", indexingDate=" + indexingDate + "]";
+		return "WebPage [url=" + url + ", title=" + title + ", indexingDate="
+				+ indexingDate + "]";
 	}
-	
 
 }
