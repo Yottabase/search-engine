@@ -16,13 +16,13 @@ import org.yottabase.eureka.ui.web.core.Action;
 
 public class ApiSearchAction implements Action{
 
-	final int itemInPage = 20;
+	final int itemInPage = 10;
 	
 	public Searcher getSearcher(){
 		Searcher searcher;
 		
-		 searcher = new org.yottabase.eureka.ui.web.stub.StubSearcher();
-		 //searcher = new org.yottabase.eureka.searcher.IndexSearch();
+		 //searcher = new org.yottabase.eureka.ui.web.stub.StubSearcher();
+		 searcher = new org.yottabase.eureka.searcher.IndexSearch();
 		
 		return searcher;
 	}
