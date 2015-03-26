@@ -16,7 +16,7 @@ jQuery( document ).ready(function( $ ) {
 		
 		var q = $(this).val();
 		
-		$.get("apiSearch.do", function( data ) {
+		$.get("apiSearch.do", {"q" : q, "p" : 1}).done( function( data ) {
 			
 			console.log(data);
 			
