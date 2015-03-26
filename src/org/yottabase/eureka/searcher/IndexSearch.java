@@ -26,22 +26,24 @@ import org.yottabase.eureka.core.WebPage;
 import org.yottabase.eureka.core.WebPageSearchResult;
 
 public class IndexSearch implements Searcher {
-	private int maxHits;					// TODO NON DOVREBBE ESSERE UN LONG?
+	private int maxHits;
 	private String indexPath;
 	private Directory indexDir;
 	private DirectoryReader reader;
 	private StandardAnalyzer analyzer;
 	private IndexSearcher searcher;
 	private SearchResult searchResultItem;	// TODO SearchResult NON E' UN ITEM: PERCHE' SI CHIAMA COSI??!
+//	private ScoreDoc lastScore;
 
 	public IndexSearch() throws IOException {
-		this.maxHits = 100; 				// set the maximum number of results */
+		this.maxHits = 500000;
 		this.indexPath = "index"; 			// TODO DA MODIFICARE
 		this.indexDir = FSDirectory.open(new File(indexPath));
 		this.reader = DirectoryReader.open( indexDir );
 		this.searcher = new IndexSearcher( reader );
 		this.analyzer = new StandardAnalyzer(Version.LUCENE_47, CharArraySet.EMPTY_SET);
 		this.searchResultItem = new SearchResult();
+//		this.lastScore = null;
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class IndexSearch implements Searcher {
 		double queryTime;
 		
 		// open a directory reader and create searcher and topdocs
-		TopScoreDocCollector collector = TopScoreDocCollector.create( maxHits, true);
+		TopScoreDocCollector collector = TopScoreDocCollector.create( itemInPage, true);
 		
 		// TODO UNIRE RICERCA IN TITLE, CONTENT (E URL?)
 		QueryParser queryParser = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, analyzer);
@@ -61,15 +63,17 @@ public class IndexSearch implements Searcher {
 		/* search into the index */
 		searcher.search(query, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
+		
 		// TODO DEVE ESSERE ALL'INIZIO DELLA SOTTOPOSIZIONE DELLA QUERY
 		startTimeQuery = System.currentTimeMillis();
 
 		// TODO SearchResult DOVREBBE AVERE UN COSTRUTTORE NO-ARG CHE INIZIALIZZA QUESTA LISTA
 		List<WebPageSearchResult> webPagesList = new LinkedList<WebPageSearchResult>();
 
-		for (ScoreDoc hit : hits) {
-			Document doc = searcher.doc( hit.doc );
+		int i;
+		for (i = 0; i < hits.length; i++) {
+			int docID = hits[i].doc;
+			Document doc = searcher.doc( docID );
 			
 			// VEDI PENULTIMO COMMENTO NEL METODO
 			Calendar date = new GregorianCalendar();
@@ -97,12 +101,17 @@ public class IndexSearch implements Searcher {
 			// TODO MODIFICA QUINDI ANCHE PASSAGGIO SUBITO PRECEDENTE
 			searchResultItem.setWebPages(webPagesList);
 		}
+//		System.out.println("i="+i);
+//		System.out.println("hits.length="+hits.length);
+//		lastScore = hits[hits.length-1];
+//		System.out.println("DOC = " + lastScore.doc);
+//		System.out.println("SCORE = " + lastScore.score);
 		// TODO DEVE ESSERE AL PUNTO DI RISPOSTA DELLA QUERY
 		endTimeQuery = System.currentTimeMillis();
 		queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
 		// TUTTI (o quasi) GLI ATTRIBUTI DI SearchResult SETTATI QUI (o all'inizio, ma insieme)
-		searchResultItem.setItemsCount( hits.length );
+		searchResultItem.setItemsCount( collector.getTotalHits() );
 		searchResultItem.setPage( page );
 		searchResultItem.setQueryResponseTime( queryTime );
 		// TODO MANCA IL SETTING DI ALCUNI ATTRIBUTI (e.g.: itemInPage ? )
