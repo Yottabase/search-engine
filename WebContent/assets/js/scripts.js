@@ -138,6 +138,26 @@ function clearResults(){
 };
 
 
+// speech to text
+jQuery( document ).ready(function( $ ) {
+	var commands = {
+	'hello': function() { 
+		alert('Hello world!'); 
+	},
+	'ciao': function() { 
+		alert('Hello world!'); 
+	},
+	'test *': function(term) {
+		console.log(term);
+		  alert('speech:' + query);
+		},
+	};
+	
+	annyang.addCommands(commands);
+	
+	annyang.start();
+});
+
 
 
 
