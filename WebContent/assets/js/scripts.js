@@ -30,18 +30,12 @@ jQuery( document ).ready(function( $ ) {
 			//aggiorna statistiche
 			$('#stats').text("Circa "+data.itemsCount+" risultati ("+data.queryResponseTime+" secondi)");
 			
-			//splitta le parole della query
-			var queryWords = q.split(" ");
-			queryWords = queryWords.remove(" ");
-			queryWords = queryWords.remove("");
-			console.log(queryWords);
-			
 			//disegna nuovi blocchi
 			data.webPages.forEach(function(item){
 				
 				//mette in grassetto le parole degli snippets presenti nella query
 				var snippet = item.snippet;
-				queryWords.forEach(function(w){
+				item.highlights.forEach(function(w){
 					snippet = highlightWords(snippet, w);
 				});
 				
@@ -54,7 +48,6 @@ jQuery( document ).ready(function( $ ) {
 				
 				resultsBlock.append(resultBlock);
 			});
-			
 			
 			
 			//aggiunge parole suggerite
