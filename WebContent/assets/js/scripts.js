@@ -141,21 +141,23 @@ function clearResults(){
 // speech to text
 jQuery( document ).ready(function( $ ) {
 	var commands = {
-	'hello': function() { 
-		alert('Hello world!'); 
-	},
 	'ciao': function() { 
 		alert('Hello world!'); 
 	},
-	'test *': function(term) {
-		console.log(term);
-		  alert('speech:' + query);
+	'cercami *query': function(query) {
+		console.log(query);
+			$('#search-input').val(query);
+			clearResults();
+			performQuery(query, 1);
 		},
 	};
 	
 	annyang.addCommands(commands);
+	annyang.debug();
+	annyang.setLanguage('it_IT');
 	
-	annyang.start();
+	//annyang.start();
+	annyang.start({ autoRestart: true, continuous: true });
 });
 
 
