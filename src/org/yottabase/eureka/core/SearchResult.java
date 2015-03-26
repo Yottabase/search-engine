@@ -1,5 +1,6 @@
 package org.yottabase.eureka.core;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class SearchResult {
@@ -17,7 +18,7 @@ public class SearchResult {
 	/**
 	 * Numero di item (reali) presenti nella pagina
 	 */
-	private Integer itemInPage;
+	private Integer itemsInPage;
 	
 	/**
 	 * Items della ricerca
@@ -33,6 +34,26 @@ public class SearchResult {
 	 * Numero di secondi che sono stati utilizzati per effettuare la ricerca
 	 */
 	private Double queryResponseTime;
+	
+	/**
+	 * Identificativo dell'ultimo documento della ricerca
+	 */
+	private Integer docID;
+	
+	/**
+	 * Score dell'ultimo documento della ricerca
+	 */
+	private Float docScore;
+	
+	/**
+	 * La query realmente eseguita in caso di mispelling
+	 */
+	private String executedQuery;
+	
+	public SearchResult() {
+		this.webPages = new LinkedList<WebPageSearchResult>();
+		this.suggestedSearches = new LinkedList<String>();
+	}
 
 	public Integer getItemsCount() {
 		return itemsCount;
@@ -50,12 +71,12 @@ public class SearchResult {
 		this.page = page;
 	}
 
-	public Integer getItemInPage() {
-		return itemInPage;
+	public Integer getItemsInPage() {
+		return itemsInPage;
 	}
 
-	public void setItemInPage(Integer itemInPage) {
-		this.itemInPage = itemInPage;
+	public void setItemsInPage(Integer itemInPage) {
+		this.itemsInPage = itemInPage;
 	}
 
 	public List<WebPageSearchResult> getWebPages() {
@@ -66,11 +87,11 @@ public class SearchResult {
 		this.webPages = webPages;
 	}
 
-	public List<String> getSuggestedSearch() {
+	public List<String> getSuggestedSearches() {
 		return suggestedSearches;
 	}
 
-	public void setSuggestedSearch(List<String> suggestedSearch) {
+	public void setSuggestedSearches(List<String> suggestedSearch) {
 		this.suggestedSearches = suggestedSearch;
 	}
 
@@ -80,6 +101,38 @@ public class SearchResult {
 
 	public void setQueryResponseTime(Double queryResponseTime) {
 		this.queryResponseTime = queryResponseTime;
-	}	
+	}
+
+	public Integer getDocID() {
+		return docID;
+	}
+
+	public void setDocID(Integer doc) {
+		this.docID = doc;
+	}
+
+	public Float getDocScore() {
+		return docScore;
+	}
+
+	public void setDocScore(Float score) {
+		this.docScore = score;
+	}
 	
+	public String getExecutedQuery() {
+		return executedQuery;
+	}
+
+	public void setExecutedQuery(String executedQuery) {
+		this.executedQuery = executedQuery;
+	}
+	
+	public boolean addWebSearchResult(WebPageSearchResult page) {
+		return this.webPages.add(page);
+	}
+	
+	public boolean addSuggestedSearch(String suggestedSearch) {
+		return this.suggestedSearches.add(suggestedSearch);
+	}
+
 }

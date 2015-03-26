@@ -1,6 +1,7 @@
 package org.yottabase.eureka.core;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 public class WebPageSearchResult {
@@ -14,6 +15,11 @@ public class WebPageSearchResult {
 	 * Pezzo di pagina che contiene il risultato della query
 	 */
 	private String snippet;
+	
+	/**
+	 * Elenco delle stringhe da evidenziare nello snippet
+	 */
+	private List<String> highlights;
 
 	/**
 	 * Url della pagina
@@ -29,11 +35,17 @@ public class WebPageSearchResult {
 	 * La data in cui è stato esguito il crawling della pagina
 	 */
 	private Calendar date;
+	
+	public WebPageSearchResult() {
+		this.highlights = new LinkedList<String>();
+		this.skippedWords = new LinkedList<String>();
+	}
 
-	public WebPageSearchResult(String title, String snippet, String url,
-			List<String> skippedWords, Calendar date) {
+	public WebPageSearchResult(String title, String snippet, List<String> highlights, 
+			String url, List<String> skippedWords, Calendar date) {
 		this.title = title;
 		this.snippet = snippet;
+		this.highlights = highlights;
 		this.url = url;
 		this.skippedWords = skippedWords;
 		this.date = date;
@@ -53,6 +65,14 @@ public class WebPageSearchResult {
 
 	public void setSnippet(String snippet) {
 		this.snippet = snippet;
+	}
+
+	public List<String> getHighlights() {
+		return highlights;
+	}
+
+	public void setHighlights(List<String> highlights) {
+		this.highlights = highlights;
 	}
 
 	public String getUrl() {
@@ -79,12 +99,21 @@ public class WebPageSearchResult {
 	public void setDate(Calendar date) {
 		this.date = date;
 	}
+	
+	public boolean addHighlight(String highlight) {
+		return this.highlights.add(highlight);
+	}
+	
+	public boolean addSkippedWord(String skippedWord) {
+		return this.skippedWords.add(skippedWord);
+	}
 
 	@Override
 	public String toString() {
 		return "WebPageSearchResult" + "\n" +
 				"\t" + "TITLE" + "\t\t" + title + "\n" +
 				"\t" + "SNIPPET" + "\t\t" + snippet + "\n" +
+				"\t" + "HIGHLIGHTS" + "\t" + highlights + "\n" +
 				"\t" + "SKIPPED" + "\t\t" + skippedWords + "\n" +
 				"\t" + "URL" + "\t\t" + url + "\n" +
 				"\t" + "DATE" + "\t\t" + date.getTime().toString();

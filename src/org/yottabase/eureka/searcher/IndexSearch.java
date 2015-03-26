@@ -26,54 +26,67 @@ import org.yottabase.eureka.core.WebPage;
 import org.yottabase.eureka.core.WebPageSearchResult;
 
 public class IndexSearch implements Searcher {
-	private int maxHits;
 	private String indexPath;
 	private Directory indexDir;
 	private DirectoryReader reader;
 	private StandardAnalyzer analyzer;
 	private IndexSearcher searcher;
-	private SearchResult searchResultItem;	// TODO SearchResult NON E' UN ITEM: PERCHE' SI CHIAMA COSI??!
-//	private ScoreDoc lastScore;
+	private SearchResult searchResult;
 
-	public IndexSearch() throws IOException {
-		this.maxHits = 500000;
-		this.indexPath = "index"; 			// TODO DA MODIFICARE
-		this.indexDir = FSDirectory.open(new File(indexPath));
-		this.reader = DirectoryReader.open( indexDir );
+	public IndexSearch() {
+		this.indexPath = "index"; 													// TODO DA MODIFICARE
+		try {
+			this.indexDir = FSDirectory.open( new File(indexPath) );
+			this.reader = DirectoryReader.open( indexDir );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.searcher = new IndexSearcher( reader );
 		this.analyzer = new StandardAnalyzer(Version.LUCENE_47, CharArraySet.EMPTY_SET);
-		this.searchResultItem = new SearchResult();
-//		this.lastScore = null;
+		this.searchResult = new SearchResult();
 	}
 
 	@Override
-	public SearchResult search(String queryStr, Integer page, Integer itemInPage) 
-			throws IOException, ParseException, java.text.ParseException {
+	public SearchResult search(String queryStr, Integer page, Integer itemInPage, 
+			Integer lastDocID, Float lastDocScore) {
 		
+		Query query;
+		QueryParser queryParser;
+		ScoreDoc lastScore, newLastScore;
+		TopScoreDocCollector collector;
 		long startTimeQuery, endTimeQuery;
 		double queryTime;
 		
-		// open a directory reader and create searcher and topdocs
-		TopScoreDocCollector collector = TopScoreDocCollector.create( itemInPage, true);
-		
-		// TODO UNIRE RICERCA IN TITLE, CONTENT (E URL?)
-		QueryParser queryParser = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, analyzer);
-		Query query = queryParser.parse( queryStr );
-
-		/* search into the index */
-		searcher.search(query, collector);
-		ScoreDoc[] hits = collector.topDocs().scoreDocs;
-		
-		// TODO DEVE ESSERE ALL'INIZIO DELLA SOTTOPOSIZIONE DELLA QUERY
 		startTimeQuery = System.currentTimeMillis();
+		
+		lastScore = ( (lastDocID != null) && (lastDocScore != null) ) ? 
+				new ScoreDoc(lastDocID, lastDocScore) : null;
+				
+		collector = (lastScore == null) ? 
+				TopScoreDocCollector.create( itemInPage, true) :
+				TopScoreDocCollector.create( itemInPage, lastScore, true);
 
-		// TODO SearchResult DOVREBBE AVERE UN COSTRUTTORE NO-ARG CHE INIZIALIZZA QUESTA LISTA
-		List<WebPageSearchResult> webPagesList = new LinkedList<WebPageSearchResult>();
+		try {
+			// TODO Unire ricerca in title, content (e url?)
+			queryParser = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, analyzer);
+			query = queryParser.parse( queryStr );
+			searcher.search(query, collector);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		int i;
-		for (i = 0; i < hits.length; i++) {
-			int docID = hits[i].doc;
-			Document doc = searcher.doc( docID );
+		ScoreDoc[] hits = collector.topDocs().scoreDocs;
+		for (ScoreDoc hit : hits) {
+			Document doc = null;
+			int docID = hit.doc;
+			
+			try {
+				doc = searcher.doc( docID );
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			// VEDI PENULTIMO COMMENTO NEL METODO
 			Calendar date = new GregorianCalendar();
@@ -83,44 +96,33 @@ public class IndexSearch implements Searcher {
 			List<String> skippedWords = new LinkedList<String>();
 			skippedWords.add( "skipWord" );
 
-			// TODO FUORI DAL FOR! (IN BASSO, ASSIEME AL RESTO)
-			// TODO I SUGGERIMENTI NON FUNZIONANO
-			List<String> suggestions = Suggest.spell(queryStr);
-			searchResultItem.setSuggestedSearch( suggestions );
-
 			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
 					doc.get(WebPage.TITLE), 
-					doc.get(WebPage.CONTENT).substring(0, 30),	// DRAMMA
+					doc.get(WebPage.CONTENT).substring(0, 300),	// DRAMMA
+					new LinkedList<String>(),
 					doc.get(WebPage.URL), 
 					skippedWords, 	// STATICO...
 					date);			// QUI: O TUTTO O NIENTE!
-			webPagesList.add(webPageSearchResult);
-
-			// TODO SearchResult DOVREBBE AVERE DIRETTAMENTE UN METODO "addWebSearchResult"
-			// 		COSI' COME UN METODO "addSuggestedSearch"
-			// TODO MODIFICA QUINDI ANCHE PASSAGGIO SUBITO PRECEDENTE
-			searchResultItem.setWebPages(webPagesList);
+			searchResult.addWebSearchResult( webPageSearchResult );
 		}
-//		System.out.println("i="+i);
-//		System.out.println("hits.length="+hits.length);
-//		lastScore = hits[hits.length-1];
-//		System.out.println("DOC = " + lastScore.doc);
-//		System.out.println("SCORE = " + lastScore.score);
-		// TODO DEVE ESSERE AL PUNTO DI RISPOSTA DELLA QUERY
+		
+		newLastScore = hits[hits.length - 1];
+		
 		endTimeQuery = System.currentTimeMillis();
 		queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
-		// TUTTI (o quasi) GLI ATTRIBUTI DI SearchResult SETTATI QUI (o all'inizio, ma insieme)
-		searchResultItem.setItemsCount( collector.getTotalHits() );
-		searchResultItem.setPage( page );
-		searchResultItem.setQueryResponseTime( queryTime );
-		// TODO MANCA IL SETTING DI ALCUNI ATTRIBUTI (e.g.: itemInPage ? )
-
-		return searchResultItem;
+		searchResult.setItemsCount( collector.getTotalHits() );
+		searchResult.setPage( page );
+		searchResult.setItemsInPage( itemInPage );
+//		searchResult.setSuggestedSearches( Suggest.spell(queryStr) );		// TODO I SUGGERIMENTI NON FUNZIONANO
+		searchResult.setQueryResponseTime( queryTime );
+		searchResult.setDocID( newLastScore.doc );
+		searchResult.setDocScore( newLastScore.score );
+		return searchResult;
 	}
 
 	@Override
-	public List<String> autocomplete(String query) throws IOException {
+	public List<String> autocomplete(String query) {
 
 		return null;
 	}
