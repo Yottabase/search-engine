@@ -11,11 +11,20 @@ import org.json.JSONObject;
 import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.Searcher;
 import org.yottabase.eureka.core.WebPageSearchResult;
+import org.yottabase.eureka.searcher.IndexSearch;
 import org.yottabase.eureka.ui.web.core.Action;
 import org.yottabase.eureka.ui.web.stub.StubSearcher;
 
 public class ApiSearchAction implements Action{
 
+	public Searcher getSearcher(){
+		Searcher searcher;
+		 //searcher = new StubSearcher();
+		 searcher = new IndexSearch();
+		
+		return searcher;
+	}
+	
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -25,7 +34,7 @@ public class ApiSearchAction implements Action{
 		//TODO aggiungere qualche controllo su q?
 		//TODO aggiungere qualche controllo su page?
 		
-		Searcher searcher = new StubSearcher();
+		Searcher searcher = this.getSearcher();
 		SearchResult result = searcher.search(q, page, 10);
 		
 		JSONObject json = new JSONObject();
