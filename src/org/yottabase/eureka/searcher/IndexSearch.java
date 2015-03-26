@@ -18,8 +18,8 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.Searcher;
 import org.yottabase.eureka.core.WebPage;
@@ -51,7 +51,7 @@ public class IndexSearch implements Searcher {
 			Integer lastDocID, Float lastDocScore) {
 		
 		Query query;
-		QueryParser queryParser;
+		MultiFieldQueryParser queryParser;
 		ScoreDoc lastScore, newLastScore;
 		TopScoreDocCollector collector;
 		long startTimeQuery, endTimeQuery;
@@ -68,7 +68,10 @@ public class IndexSearch implements Searcher {
 
 		try {
 			// TODO Unire ricerca in title, content (e url?)
-			queryParser = new QueryParser(Version.LUCENE_47, WebPage.CONTENT, analyzer);
+			queryParser = new MultiFieldQueryParser(
+					Version.LUCENE_47, 
+					new String[] { WebPage.TITLE, WebPage.CONTENT }, 
+					analyzer);
 			query = queryParser.parse( queryStr );
 			searcher.search(query, collector);
 		} catch (ParseException e) {
