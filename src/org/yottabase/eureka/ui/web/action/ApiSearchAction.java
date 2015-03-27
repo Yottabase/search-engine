@@ -33,9 +33,18 @@ public class ApiSearchAction implements Action{
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		
-		//TODO aggiungere qualche controllo sugli input q, page, lastDocId, lastDocScore?
 		String q =  request.getParameter("q");
-		Integer page = Integer.parseInt(request.getParameter("page"));
+		if(q == null || q.length() == 0 ){
+			response.getWriter().write("Il parametro q è obbligatorio");
+			return;
+		}
+		
+		String pageParam = request.getParameter("page");
+		if(pageParam == null || pageParam.length() == 0 ){
+			response.getWriter().write("Il parametro page è obbligatorio");
+			return;
+		}
+		Integer page = Integer.parseInt(pageParam);
 		
 		Searcher searcher = this.getSearcher();
 		SearchResult result = searcher.search(q, page, this.itemInPage);
