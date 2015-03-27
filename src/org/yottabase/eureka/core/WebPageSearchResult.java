@@ -35,10 +35,10 @@ public class WebPageSearchResult {
 		this.skippedWords = new LinkedList<String>();
 	}
 
-	public WebPageSearchResult(String title, String snippet, List<String> highlights, 
-			String url, List<String> skippedWords, Calendar date) {
+	public WebPageSearchResult(String title, String highlightedSnippet, String url, 
+			List<String> skippedWords, Calendar date) {
 		this.title = title;
-		this.highlightedSnippet = snippet;
+		this.highlightedSnippet = highlightedSnippet;
 		this.url = url;
 		this.skippedWords = skippedWords;
 		this.date = date;

@@ -20,6 +20,7 @@ import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.apache.lucene.search.highlight.SimpleSpanFragmenter;
 import org.apache.lucene.search.highlight.TextFragment;
 import org.apache.lucene.search.highlight.TokenSources;
 import org.apache.lucene.store.Directory;
@@ -57,19 +58,16 @@ public class IndexSearch implements Searcher {
 
 	@Override
 	public SearchResult search(String queryStr, Integer page, Integer itemInPage) {
-		
-		Query query = null;
-		MultiFieldQueryParser queryParser;
-		
+		Query query = null;	
 		long startTimeQuery = System.currentTimeMillis();
 		
 		int slotsNumber = Math.min(itemInPage*page, maxHits);
 		TopScoreDocCollector collector = TopScoreDocCollector.create(slotsNumber, true);
 
 		try {
-			queryParser = new MultiFieldQueryParser(
+			MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
 					Version.LUCENE_47, 
-					new String[] { WebPage.TITLE, WebPage.CONTENT }, 
+					new String[] { WebPage.CONTENT, WebPage.TITLE }, 
 					analyzer);
 			query = queryParser.parse( queryStr );
 			searcher.search(query, collector);
@@ -80,44 +78,56 @@ public class IndexSearch implements Searcher {
 		}
 
 		ScoreDoc[] hits = collector.topDocs((page-1)*itemInPage, page*itemInPage-1 ).scoreDocs;
+		List<WebPageSearchResult> webPagesList = new LinkedList<WebPageSearchResult>();
 		for (int i = 0; i < hits.length; i++) {
-			int id = hits[i].doc;
-			Document doc = null;
-			
 			try {
-				doc = searcher.doc(id);
+				int id = hits[i].doc;
+				Document doc = searcher.doc(id);;
+				
+				WebPageSearchResult webPageSearchResult = 
+						documentToWebPageSearchResult(doc, query, id, WebPage.CONTENT, 3);
+				
+				webPagesList.add( webPageSearchResult );
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			// VEDI PENULTIMO COMMENTO NEL METODO
-			Calendar date = new GregorianCalendar();
-			date.setTimeInMillis( Long.parseLong(doc.get(WebPage.INDEXING_DATE)) );
-			
-			// TODO STATICO: DA IMPLEMENTARE (non qui)
-			List<String> skippedWords = new LinkedList<String>();
-			skippedWords.add( "skipWord" );
-
-			WebPageSearchResult webPageSearchResult = new WebPageSearchResult(
-					doc.get( WebPage.TITLE ), 
-					doc.get( WebPage.CONTENT).substring(0, 300 ),	// DRAMMA
-					getHighlightedSnippets(query, doc, id, WebPage.CONTENT),	// STATICO
-					doc.get(WebPage.URL), 
-					skippedWords, 	// STATICO...
-					date);			// QUI: O TUTTO O NIENTE!
-			searchResult.addWebSearchResult( webPageSearchResult );
 		}
 		
 		long endTimeQuery = System.currentTimeMillis();
 		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
+		/* Filling in the search result values */
 		searchResult.setItemsCount( collector.getTotalHits() );
 		searchResult.setPage( page );
 		searchResult.setItemsInPage( itemInPage );
 //		searchResult.setSuggestedSearches( Suggest.spell(queryStr) );		// TODO I SUGGERIMENTI NON FUNZIONANO
 		searchResult.setQueryResponseTime( queryTime );
+		searchResult.setWebPages( webPagesList );
 		// TODO set executed query to search result
 		return searchResult;
+	}
+	
+	
+	private WebPageSearchResult documentToWebPageSearchResult(
+			Document doc, Query query, int docID, String snippedDocField, int snippetFragsNum) {
+		
+		WebPageSearchResult page = new WebPageSearchResult();
+		
+		String title = doc.get( WebPage.TITLE );
+		String url = doc.get( WebPage.URL );
+		String dateStr = doc.get( WebPage.INDEXING_DATE );
+		String snippet = getHighlightedSnippet(query, doc, docID, snippedDocField);
+//		List<String> skippedWords = getSkippedWords();	// TODO
+		
+		Calendar date = new GregorianCalendar();
+		date.setTimeInMillis(Long.parseLong(dateStr));
+		
+		page.setTitle(title);
+		page.setHighlightedSnippet(snippet);
+		page.setUrl(url);
+		page.setDate(date);
+//		page.setSkippedWords(skippedWords);
+		return page;
 	}
 	
 	/**
@@ -128,25 +138,27 @@ public class IndexSearch implements Searcher {
 	 * @param field
 	 * @return
 	 */
-	private List<String> getHighlightedSnippets(Query query, Document doc, int id, String field) {
-		List<String> highlights = new LinkedList<String>();
+	private String getHighlightedSnippet(Query query, Document doc, int id, String field) {
+		String highlights = new String();
 		
 		SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter();
-		Highlighter highlighter = new Highlighter(htmlFormatter, new QueryScorer(query));
+		QueryScorer scorer = new QueryScorer(query);
+		Highlighter highlighter = new Highlighter(htmlFormatter, scorer);
 		String text = doc.get(field);
 		
 	    try {
-	    	
+	    	highlighter.setTextFragmenter(new SimpleSpanFragmenter(scorer, 80));
 	    	TokenStream tokenStream = TokenSources.getAnyTokenStream(searcher.getIndexReader(), id, field, analyzer);
-	    	TextFragment[] fragments = highlighter.getBestTextFragments(tokenStream, text, false, 10);	// TODO settare numero di frammenti
+	    	TextFragment[] fragments = highlighter.getBestTextFragments(tokenStream, text, false, 3);
 	    	
 	    	for (TextFragment frag : fragments)
-	    		highlights.add(frag.toString());
+	    		highlights += frag.toString() + "..." + "\n";
 	    	
 		} catch (IOException | InvalidTokenOffsetsException e) {
 			e.printStackTrace();
 		}
 	    
+	    // TODO deve ritornare una stringa
 	    return highlights;
 	}
 
