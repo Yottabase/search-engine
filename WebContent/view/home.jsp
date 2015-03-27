@@ -42,6 +42,12 @@
 					</div>
 				</div>
 			</div>
+			
+			<nav class="text-center">
+			  <div id="pagination">
+			  	<!-- qui ci vanno i numeri di pagina -->
+			  </div>
+			</nav>
 	</div>
 
 

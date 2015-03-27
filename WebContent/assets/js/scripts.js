@@ -15,7 +15,7 @@ jQuery( document ).ready(function( $ ) {
 		var q = $(this).val();
 		clearResults();
 		if(q.length != 0){
-			performQuery(q);	
+			performQuery(q);
 		}
 	});
 });
@@ -96,6 +96,8 @@ function performQuery(query, page){
 			$('#suggested-search').show();
 		}
 		
+		drawPageNumbers(page, data.itemsCount, data.itemsInPage)
+		
 		if(! resultsMode ){ gotoResultsMode(); }
 		resultsBlock.fadeIn(500);
 		
@@ -129,10 +131,34 @@ function clearResults(){
 	resultsBlock.stop(true, true);
 	$('#suggested-search').hide();
 	$('#suggested-search .words').empty();
+	$('#pagination').empty().off();
 	
 	//aggiorna statistiche
 	$('#stats').text("");
 };
+
+
+function drawPageNumbers(currentPage, itemsCount, itemsInPage){
+	
+	var totPage = Math.ceil(itemsCount / itemsInPage);
+	
+	$('#pagination').bootpag({
+	    total: totPage,
+	    page: currentPage,
+	    maxVisible: 10,
+	    leaps: true
+	}).on("page", function(event, num){
+		
+		var q = $('#search-input').val();
+		clearResults();
+		
+		if(q.length != 0){
+			performQuery(q, num);	
+		}
+	    
+	});
+	
+}
 
 
 // speech to text
