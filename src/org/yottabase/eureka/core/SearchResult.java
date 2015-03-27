@@ -36,16 +36,6 @@ public class SearchResult {
 	private Double queryResponseTime;
 	
 	/**
-	 * Identificativo dell'ultimo documento della ricerca
-	 */
-	private Integer docID;
-	
-	/**
-	 * Score dell'ultimo documento della ricerca
-	 */
-	private Float docScore;
-	
-	/**
 	 * La query realmente eseguita in caso di mispelling
 	 */
 	private String executedQuery;
@@ -101,22 +91,6 @@ public class SearchResult {
 
 	public void setQueryResponseTime(Double queryResponseTime) {
 		this.queryResponseTime = queryResponseTime;
-	}
-
-	public Integer getDocID() {
-		return docID;
-	}
-
-	public void setDocID(Integer doc) {
-		this.docID = doc;
-	}
-
-	public Float getDocScore() {
-		return docScore;
-	}
-
-	public void setDocScore(Float score) {
-		this.docScore = score;
 	}
 	
 	public String getExecutedQuery() {

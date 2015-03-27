@@ -11,12 +11,8 @@ import org.yottabase.eureka.core.WebPageSearchResult;
 public class StubSearcher implements Searcher{
 
 	@Override
-	public SearchResult search(String query, Integer page, Integer itemInPage,
-			Integer lastDocID, Float lastDocScore) {
+	public SearchResult search(String query, Integer page, Integer itemInPage) {
 		
-		ArrayList<String> highlights= new ArrayList<String>();
-		highlights.add("snippet");
-		highlights.add("high2");
 		
 		ArrayList<String> skippedWords= new ArrayList<String>();
 		skippedWords.add("skip");
@@ -26,7 +22,6 @@ public class StubSearcher implements Searcher{
 		webPages.add(new WebPageSearchResult(
 			"Christian", 
 			"Ciao sono uno snippet", 
-			highlights,
 			"http://www.google.it", 
 			skippedWords,
 			new GregorianCalendar(2012,10,1)
@@ -35,7 +30,6 @@ public class StubSearcher implements Searcher{
 		webPages.add(new WebPageSearchResult(
 			"Leonardo", 
 			"Ciao sono un professor snippet ", 
-			new ArrayList<String>(),
 			"http://www.google.it/leonardo.proff", 
 			new ArrayList<String>(),
 			new GregorianCalendar(1015,12,4)
@@ -44,7 +38,6 @@ public class StubSearcher implements Searcher{
 		webPages.add(new WebPageSearchResult(
 			"Alessandro", 
 			"Ciao sono uno snippet assistente del proff Leonardo", 
-			new ArrayList<String>(),
 			"http://www.google.it/leonardo.proff/alessandro", 
 			new ArrayList<String>(),
 			new GregorianCalendar(2013,2,54)

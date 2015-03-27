@@ -35,14 +35,10 @@ public class ApiSearchAction implements Action{
 		
 		//TODO aggiungere qualche controllo sugli input q, page, lastDocId, lastDocScore?
 		String q =  request.getParameter("q");
-		Integer page = Integer.getInteger(request.getParameter("page"));
-		Integer lastDocId = null; //TODO va implementato
-		Float lastDocScore = null; //TODO va implementato
-		
+		Integer page = Integer.parseInt(request.getParameter("page"));
 		
 		Searcher searcher = this.getSearcher();
-		SearchResult result = searcher.search(q, page, this.itemInPage, lastDocId, lastDocScore);
-		
+		SearchResult result = searcher.search(q, page, this.itemInPage);
 		
 		JSONObject json = new JSONObject();
 		json.put("itemsCount", result.getItemsCount());
@@ -51,8 +47,6 @@ public class ApiSearchAction implements Action{
 		JSONArray suggestedSearch = new JSONArray(result.getSuggestedSearches().toArray());
 		json.put("suggestedSearch", suggestedSearch);
 		json.put("queryResponseTime", result.getQueryResponseTime());
-		json.put("docId", result.getDocID());
-		json.put("docScore", result.getDocScore());
 		
 		
 		JSONArray items = new JSONArray();
@@ -60,12 +54,10 @@ public class ApiSearchAction implements Action{
 		for(WebPageSearchResult webPage : result.getWebPages()){
 			JSONObject item = new JSONObject();
 			item.put("title", webPage.getTitle());
-			item.put("snippet", webPage.getSnippet());
+			item.put("highlightedSnippet", webPage.getHighlightedSnippet());
 			item.put("url", webPage.getUrl());
 			item.put("date", df.format(webPage.getDate().getTime()));
 			
-			JSONArray highlights = new JSONArray(webPage.getHighlights().toArray());
-			item.put("highlights", highlights);
 			JSONArray skippedWords = new JSONArray(webPage.getSkippedWords().toArray());
 			item.put("skippedWords", skippedWords);
 			

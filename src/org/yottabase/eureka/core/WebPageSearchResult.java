@@ -14,12 +14,7 @@ public class WebPageSearchResult {
 	/**
 	 * Pezzo di pagina che contiene il risultato della query
 	 */
-	private String snippet;
-	
-	/**
-	 * Elenco delle stringhe da evidenziare nello snippet
-	 */
-	private List<String> highlights;
+	private String highlightedSnippet;
 
 	/**
 	 * Url della pagina
@@ -37,15 +32,13 @@ public class WebPageSearchResult {
 	private Calendar date;
 	
 	public WebPageSearchResult() {
-		this.highlights = new LinkedList<String>();
 		this.skippedWords = new LinkedList<String>();
 	}
 
-	public WebPageSearchResult(String title, String snippet, List<String> highlights, 
-			String url, List<String> skippedWords, Calendar date) {
+	public WebPageSearchResult(String title, String highlightedSnippet, String url, 
+			List<String> skippedWords, Calendar date) {
 		this.title = title;
-		this.snippet = snippet;
-		this.highlights = highlights;
+		this.highlightedSnippet = highlightedSnippet;
 		this.url = url;
 		this.skippedWords = skippedWords;
 		this.date = date;
@@ -59,20 +52,12 @@ public class WebPageSearchResult {
 		this.title = title;
 	}
 
-	public String getSnippet() {
-		return snippet;
+	public String getHighlightedSnippet() {
+		return highlightedSnippet;
 	}
 
-	public void setSnippet(String snippet) {
-		this.snippet = snippet;
-	}
-
-	public List<String> getHighlights() {
-		return highlights;
-	}
-
-	public void setHighlights(List<String> highlights) {
-		this.highlights = highlights;
+	public void setHighlightedSnippet(String snippet) {
+		this.highlightedSnippet = snippet;
 	}
 
 	public String getUrl() {
@@ -100,10 +85,6 @@ public class WebPageSearchResult {
 		this.date = date;
 	}
 	
-	public boolean addHighlight(String highlight) {
-		return this.highlights.add(highlight);
-	}
-	
 	public boolean addSkippedWord(String skippedWord) {
 		return this.skippedWords.add(skippedWord);
 	}
@@ -112,8 +93,7 @@ public class WebPageSearchResult {
 	public String toString() {
 		return "WebPageSearchResult" + "\n" +
 				"\t" + "TITLE" + "\t\t" + title + "\n" +
-				"\t" + "SNIPPET" + "\t\t" + snippet + "\n" +
-				"\t" + "HIGHLIGHTS" + "\t" + highlights + "\n" +
+				"\t" + "SNIPPET" + "\t\t" + highlightedSnippet + "\n" +
 				"\t" + "SKIPPED" + "\t\t" + skippedWords + "\n" +
 				"\t" + "URL" + "\t\t" + url + "\n" +
 				"\t" + "DATE" + "\t\t" + date.getTime().toString();
