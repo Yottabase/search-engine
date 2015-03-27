@@ -44,7 +44,7 @@ public class IndexSearch implements Searcher {
 	private final Integer maxHits = 500;
 
 	public IndexSearch() {
-		this.indexPath = "index"; 													// TODO DA MODIFICARE
+		this.indexPath = SearcherConfiguration.	getIndexPath();
 		try {
 			this.indexDir = FSDirectory.open( new File(indexPath) );
 			this.reader = DirectoryReader.open( indexDir );
