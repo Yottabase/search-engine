@@ -35,7 +35,6 @@ public class InputManagerImpl implements InputManager {
 		init(paths);
 	}
 	
-	
 	public InputManagerImpl(List<String> paths) {
 		init(paths);
 	}
@@ -115,6 +114,7 @@ public class InputManagerImpl implements InputManager {
 			
 		} while ( !isValid(page) );
 		
+		trim(page);
 		return page;
 	}
 	
@@ -186,15 +186,15 @@ public class InputManagerImpl implements InputManager {
 					Integer.parseInt( timeComps[0] ),
 					Integer.parseInt( timeComps[1] ),
 					Integer.parseInt( timeComps[2] ));
-			webPage.setIndexingDate(date);
+			webPage.setIndexingDate( date );
 			
 			/* Contenuto della pagina	 */
 			webPage.setTitle( htmlPage.title() );
 			
 			Element body = htmlPage.body();
 			if ( body != null ) {
-				webPage.setContent( body.toString() );
-				webPage.setContentWithoutTags( body.text() );
+				webPage.setContent( body.text().replaceAll("<[^>]*>", "") );
+				webPage.setContentWithTags( body.toString() );
 			}
 		}
 
@@ -228,7 +228,18 @@ public class InputManagerImpl implements InputManager {
 				( page.getUrl() != null ) && ( page.getUrl().length() != 0 ) &&
 				( page.getTitle() != null ) && ( page.getTitle().length() != 0 ) &&
 				( page.getContent() != null ) && ( page.getContent().length() != 0 ) &&
-				( page.getContentWithoutTags() != null ) );
+				( page.getContentWithTags() != null ) );
+	}
+	
+	/**
+	 * Effettua il trimming di tutti i campi della web page
+	 * @param page
+	 */
+	private void trim(WebPage page) {
+		page.setUrl( page.getUrl().trim() );
+		page.setTitle( page.getTitle().trim() );
+		page.setContent( page.getContent().trim() );
+		page.setContentWithTags( page.getContentWithTags() );
 	}
 
 }

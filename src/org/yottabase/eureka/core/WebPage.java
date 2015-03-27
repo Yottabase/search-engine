@@ -5,8 +5,13 @@ import java.util.Calendar;
 public class WebPage {
 	
 	public final static String URL = "url";
+	
 	public final static String TITLE = "title";
+	
 	public final static String CONTENT = "content";
+	
+	public final static String CONTENT_WITH_TAGS = "contentWithTags";
+	
 	public final static String INDEXING_DATE = "indexingDate";
 
 	/**
@@ -20,14 +25,14 @@ public class WebPage {
 	private String title;
 
 	/**
-	 * Body della pagina html
+	 * Body della pagina html senza tags
 	 */
 	private String content;
 
 	/**
-	 * Body della pagina html senza tags
+	 * Body della pagina html con tags
 	 */
-	private String contentWithoutTags;
+	private String contentWithTags;
 
 	/**
 	 * La data in cui è stato eseguito il crawling della pagina
@@ -58,12 +63,12 @@ public class WebPage {
 		this.content = content;
 	}
 
-	public String getContentWithoutTags() {
-		return contentWithoutTags;
+	public String getContentWithTags() {
+		return contentWithTags;
 	}
 
-	public void setContentWithoutTags(String contentWithoutTags) {
-		this.contentWithoutTags = contentWithoutTags;
+	public void setContentWithTags(String contentWithTags) {
+		this.contentWithTags = contentWithTags;
 	}
 
 	public Calendar getIndexingDate() {
