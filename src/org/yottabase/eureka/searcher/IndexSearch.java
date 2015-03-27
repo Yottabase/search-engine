@@ -100,7 +100,7 @@ public class IndexSearch implements Searcher {
 		searchResult.setItemsCount( collector.getTotalHits() );
 		searchResult.setPage( page );
 		searchResult.setItemsInPage( itemInPage );
-//		searchResult.setSuggestedSearches( Suggest.spell(queryStr) );		// TODO I SUGGERIMENTI NON FUNZIONANO
+		searchResult.setSuggestedSearches( Suggest.spell(queryStr) );		// TODO I SUGGERIMENTI NON FUNZIONANO
 		searchResult.setQueryResponseTime( queryTime );
 		searchResult.setWebPages( webPagesList );
 		// TODO set executed query to search result
