@@ -79,7 +79,7 @@ public class InputManagerImpl implements InputManager {
 		String path = file.getPath();
 		
 		if ( file.isFile() ) {
-			if ( path.endsWith(".warc") || path.endsWith(".warc.gz") )
+			if ( path.endsWith(".warc") )
 				inputSources.add(path);
 		} else {
 			File[] children = file.listFiles();
@@ -109,7 +109,10 @@ public class InputManagerImpl implements InputManager {
 			// Se ci sono altri input ma sono vuoti i record successivi possono continuare ad essere nulli
 			
 			while ( ((record = parser.getNextRecord()) == null) && this.hasNextInputSource() ) {
-				parser.updateInputSource( this.getNextInputSource() );
+				String inputSource = this.getNextInputSource();
+				parser.updateInputSource( inputSource );
+				
+				System.out.println("Analisi del file: " + inputSource);
 			}
 			
 			// Se il miglior record pescato tra tutti i file di input rimanenti è comunque nullo
