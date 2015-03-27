@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Searcher {
 
-	public SearchResult search(String query, Integer page, Integer itemInPage, Integer lastDocID, Float lastDocScore);
+	public SearchResult search(String query, Integer page, Integer itemInPage);
 
 	public List<String> autocomplete(String query);
 
