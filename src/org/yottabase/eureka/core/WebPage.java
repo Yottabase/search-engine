@@ -6,7 +6,8 @@ public class WebPage {
 	
 	public final static String URL = "url";
 	public final static String TITLE = "title";
-	public final static String CONTENT = "content";
+	public final static String CONTENT = "text";
+	public final static String CONTENT_WITH_TAGS = "fullText";
 	public final static String INDEXING_DATE = "indexingDate";
 
 	/**

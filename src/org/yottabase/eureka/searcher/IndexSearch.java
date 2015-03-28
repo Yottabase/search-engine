@@ -26,8 +26,8 @@ import org.apache.lucene.search.highlight.TokenSources;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.Searcher;
 import org.yottabase.eureka.core.WebPage;
@@ -65,9 +65,9 @@ public class IndexSearch implements Searcher {
 		TopScoreDocCollector collector = TopScoreDocCollector.create(slotsNumber, true);
 
 		try {
-			MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
+			QueryParser queryParser = new QueryParser(
 					Version.LUCENE_47, 
-					new String[] { WebPage.CONTENT, WebPage.TITLE }, 
+					WebPage.CONTENT, 
 					analyzer);
 			query = queryParser.parse( queryStr );
 			searcher.search(query, collector);
