@@ -6,8 +6,6 @@ public interface Parser {
 	
 	public WarcRecord getNextRecord();
 	
-	public void updateInputSource(String newInputSourcePath);
-	
 	public void close();
 
 }

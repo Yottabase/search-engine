@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jwat.warc.WarcHeader;
 import org.jwat.warc.WarcRecord;
 import org.yottabase.eureka.core.InputManager;
@@ -20,6 +21,8 @@ public class InputManagerImpl implements InputManager {
 	
 	private Parser parser;
 	
+	private String currentInputSource;
+	
 	private List<String> inputSources;
 	
 	private Iterator<String> iter;
@@ -27,11 +30,10 @@ public class InputManagerImpl implements InputManager {
 	
 	public InputManagerImpl(String path) {
 		List<String> paths = new LinkedList<String>();
-		
 		paths.add(path);
+		
 		init(paths);
 	}
-	
 	
 	public InputManagerImpl(List<String> paths) {
 		init(paths);
@@ -44,28 +46,12 @@ public class InputManagerImpl implements InputManager {
 	private void init(List<String> paths) {
 		this.inputSources = new LinkedList<String>();
 		
-		processInputPaths(paths);
+		for (String p : paths)
+			this.findInputSources( new File(p) );
 		
 		this.iter = inputSources.iterator();
-		this.parser = new WarcParser( getNextInputSource() );
-	}
-	
-	/**
-	 * Aggiunge tutti i path alla lista dei path contenenti sorgenti di input e, per 
-	 * ciascuno, cerca tutte le sorgenti di input ed esso radicate.
-	 * @param paths
-	 */
-	private void processInputPaths(List<String> paths) {
-		for (String p : paths)
-			processInputPath(p);
-	}
-	
-	/**
-	 * Aggiunge il path alla lista dei path contenenti sorgenti di input e cerca tutte
-	 * le sorgenti di input radicate al path.
-	 */
-	private void processInputPath(String path) {
-		this.findInputSources( new File(path) );
+		
+		this.loadNextInputSource();
 	}
 	
 	/**
@@ -108,12 +94,8 @@ public class InputManagerImpl implements InputManager {
 			// Un record è nullo quando l'input corrente è terminato
 			// Se ci sono altri input ma sono vuoti i record successivi possono continuare ad essere nulli
 			
-			while ( ((record = parser.getNextRecord()) == null) && this.hasNextInputSource() ) {
-				String inputSource = this.getNextInputSource();
-				parser.updateInputSource( inputSource );
-				
-				System.out.println("Analisi del file: " + inputSource);
-			}
+			while ( ((record = parser.getNextRecord()) == null) && this.hasNextInputSource() )
+				loadNextInputSource();
 			
 			// Se il miglior record pescato tra tutti i file di input rimanenti è comunque nullo
 			// allora l'input è terminato: si chiude il parser
@@ -132,6 +114,7 @@ public class InputManagerImpl implements InputManager {
 			
 		} while ( !isValid(page) );
 		
+		trim(page);
 		return page;
 	}
 	
@@ -153,6 +136,26 @@ public class InputManagerImpl implements InputManager {
 	}
 	
 	/**
+	 * Carica la prossima sorgente di input
+	 */
+	private void loadNextInputSource() {
+		this.currentInputSource = this.getNextInputSource();
+		loadInputSource();
+		
+		System.out.println("Analisi del file: " + this.currentInputSource);
+	}
+	
+	/**
+	 * Effettua il caricamento della corrente sorgente di input
+	 */
+	private void loadInputSource() {
+		if (this.parser != null)
+			this.parser.close();
+		
+		this.parser = new WarcParser(this.currentInputSource);
+	}
+	
+	/**
 	 * Converte un record Warc in un oggetto WebPage
 	 * @param record
 	 * @return
@@ -160,10 +163,14 @@ public class InputManagerImpl implements InputManager {
 	private WebPage warcRecordToWebPage(WarcRecord record) {
 		WebPage webPage = new WebPage();
 		WarcHeader warcHeader = record.header;
-		Document htmlPage = Jsoup.parse(streamToString( record.getPayloadContent() ));
-		
-		if ( warcHeader != null ) {
-			webPage.setUrl(warcHeader.warcTargetUriStr);
+		InputStream payloadContentStream = record.getPayloadContent();
+		Document htmlPage = (payloadContentStream != null) ? 
+				Jsoup.parse(streamToString( payloadContentStream )) : null;
+				
+		if ( (warcHeader != null) && (htmlPage != null) ) {
+			
+			/* Metadati della pagina (header WARC) */
+			webPage.setUrl( warcHeader.warcTargetUriStr );
 			
 			String dateString = warcHeader.warcDateStr;
 			String[] dateComps = dateString.
@@ -173,19 +180,21 @@ public class InputManagerImpl implements InputManager {
 					substring(dateString.indexOf("T") + 1, dateString.lastIndexOf("-")).
 					split(":");	
 			Calendar date = new GregorianCalendar(
-					Integer.parseInt(dateComps[0]),
-					Integer.parseInt(dateComps[1]),
-					Integer.parseInt(dateComps[2]),
-					Integer.parseInt(timeComps[0]),
-					Integer.parseInt(dateComps[1]),
-					Integer.parseInt(dateComps[2]));
-			webPage.setIndexingDate(date);
-		}
-		if ( htmlPage != null ) {
-			webPage.setTitle(htmlPage.title());
-			if ( htmlPage.body() != null ) {
-				webPage.setContent(htmlPage.body().toString());
-				webPage.setContentWithoutTags(htmlPage.body().text());
+					Integer.parseInt( dateComps[0] ),
+					Integer.parseInt( dateComps[1] ),
+					Integer.parseInt( dateComps[2] ),
+					Integer.parseInt( timeComps[0] ),
+					Integer.parseInt( timeComps[1] ),
+					Integer.parseInt( timeComps[2] ));
+			webPage.setIndexingDate( date );
+			
+			/* Contenuto della pagina	 */
+			webPage.setTitle( htmlPage.title() );
+			
+			Element body = htmlPage.body();
+			if ( body != null ) {
+				webPage.setContent( body.text().replaceAll("<[^>]*>", "") );
+				webPage.setContentWithTags( body.toString() );
 			}
 		}
 
@@ -215,11 +224,22 @@ public class InputManagerImpl implements InputManager {
 	 * @return
 	 */
 	private boolean isValid(WebPage page) {
-		return (page.getIndexingDate() != null &&
-				page.getUrl() != null &&
-				page.getTitle() != null &&
-				page.getContent() != null &&
-				page.getContentWithoutTags() != null);
+		return (( page.getIndexingDate() != null ) &&
+				( page.getUrl() != null ) && ( page.getUrl().length() != 0 ) &&
+				( page.getTitle() != null ) && ( page.getTitle().length() != 0 ) &&
+				( page.getContent() != null ) && ( page.getContent().length() != 0 ) &&
+				( page.getContentWithTags() != null ) );
+	}
+	
+	/**
+	 * Effettua il trimming di tutti i campi della web page
+	 * @param page
+	 */
+	private void trim(WebPage page) {
+		page.setUrl( page.getUrl().trim() );
+		page.setTitle( page.getTitle().trim() );
+		page.setContent( page.getContent().trim() );
+		page.setContentWithTags( page.getContentWithTags() );
 	}
 
 }

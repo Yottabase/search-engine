@@ -62,7 +62,7 @@ public class Indexer {
 			doc = new Document();
 			doc.add(new StringField(WebPage.URL, webPage.getUrl(), Field.Store.YES));
 			doc.add(new TextField(WebPage.TITLE, webPage.getTitle(), Field.Store.YES));
-			doc.add(new TextField(WebPage.CONTENT, webPage.getContentWithoutTags(), Field.Store.YES));
+			doc.add(new TextField(WebPage.CONTENT, webPage.getContentWithTags(), Field.Store.YES));
 			doc.add(new LongField(WebPage.INDEXING_DATE, webPage.getIndexingDate().getTimeInMillis(), Field.Store.YES));
 
 			writer.addDocument(doc);
