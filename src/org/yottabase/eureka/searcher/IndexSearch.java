@@ -96,12 +96,16 @@ public class IndexSearch implements Searcher {
 		long endTimeQuery = System.currentTimeMillis();
 		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
+		/* suggestion */
+		Suggest suggestionEngine = new Suggest();
+		List<String >suggestions = suggestionEngine.spell(queryStr);
+		
 		/* Filling in the search result values */
 		searchResult.setItemsCount( collector.getTotalHits() );
 		searchResult.setPage( page );
 		searchResult.setItemsInPage( itemInPage );
-		searchResult.setSuggestedSearches( Suggest.spell(queryStr) );		// TODO I SUGGERIMENTI NON FUNZIONANO
 		searchResult.setQueryResponseTime( queryTime );
+		searchResult.setSuggestedSearches(suggestions);
 		searchResult.setWebPages( webPagesList );
 		// TODO set executed query to search result
 		return searchResult;
@@ -165,8 +169,11 @@ public class IndexSearch implements Searcher {
 	
 	@Override
 	public List<String> autocomplete(String query) {
+		//todo modifica da 	spellChecker.setAccuracy(0.8f);
 
-		return null;
+		Suggest suggest_=new Suggest(0.8f);
+		List<String >suggestions =suggest_.spell(query);
+		return suggestions;
 	}
 	
 }

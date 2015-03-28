@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.yottabase.eureka.core.Searcher;
+import org.yottabase.eureka.searcher.IndexSearch;
 import org.yottabase.eureka.ui.web.core.Action;
-import org.yottabase.eureka.ui.web.stub.StubSearcher;
 
 public class ApiAutocompleteAction implements Action {
 
@@ -22,7 +22,7 @@ public class ApiAutocompleteAction implements Action {
 		String q =  request.getParameter("q");
 		//TODO aggiungere qualche controllo su q?
 		
-		Searcher searcher = new StubSearcher();
+		Searcher searcher = new IndexSearch();
 		List<String> suggestions = searcher.autocomplete(q);
 		JSONArray json = new JSONArray();
 		

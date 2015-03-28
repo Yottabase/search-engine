@@ -16,8 +16,15 @@ import org.apache.lucene.util.Version;
 import org.yottabase.eureka.core.WebPage;
 
 public class Suggest {
-	
-	public static ArrayList<String> spell(String queryString){
+	float accuracy;
+	public Suggest(float set_accuracy){
+		this.accuracy=set_accuracy;
+	}
+	public Suggest(){
+		this.accuracy=0.87f;
+	}
+	public ArrayList<String> spell(String queryString){
+		String indexPath;
 		Directory indexDir;
 		Directory spellDir;
 		DirectoryReader reader;
@@ -30,7 +37,8 @@ public class Suggest {
 
 		
 		try {
-			indexDir = FSDirectory.open(new File("index"));
+			indexPath=SearcherConfiguration.getIndexPath();
+			indexDir = FSDirectory.open(new File(indexPath));
 		    reader = DirectoryReader.open( indexDir);
 		    analyzer = new StandardAnalyzer(Version.LUCENE_47);
 		    config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
@@ -40,10 +48,12 @@ public class Suggest {
 
 			// To index a field of a user index:
 			spellChecker.indexDictionary(new LuceneDictionary(reader,WebPage.CONTENT ), config, true);
-			spellChecker.setAccuracy(0.7f);
-			Collections.addAll(similarWords,spellChecker.suggestSimilar(queryString, 5));
-	      
+			spellChecker.setAccuracy(accuracy);
+			
+			Collections.addAll(similarWords,spellChecker.suggestSimilar(queryString, 10));
+
 	        spellChecker.close();
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
