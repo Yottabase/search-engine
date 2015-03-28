@@ -151,8 +151,13 @@ public class IndexSearch implements Searcher {
 	    	TokenStream tokenStream = TokenSources.getAnyTokenStream(searcher.getIndexReader(), id, field, analyzer);
 	    	TextFragment[] fragments = highlighter.getBestTextFragments(tokenStream, text, false, 3);
 	    	
-	    	for (TextFragment frag : fragments)
-	    		highlights += frag.toString() + "..." + "\n";
+	    	for (TextFragment frag : fragments) {
+	    		String fragment = frag.toString();
+	    		fragment = fragment.replaceAll("^[^\\w]*", "");
+	    		fragment = fragment.replaceAll("[^\\w]*$", "");
+	    		
+	    		highlights += fragment + "..." + "\n";
+	    	}
 	    	
 		} catch (IOException | InvalidTokenOffsetsException e) {
 			e.printStackTrace();
