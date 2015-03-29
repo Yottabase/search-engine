@@ -206,12 +206,11 @@ public class IndexSearch implements Searcher {
 		Query query = mlt.like(hit.doc);
 		
 		TopDocs topDocs = searcher.search(query,10);
-		System.out.println("Found " + topDocs.totalHits + " hits.");
 		
 		if(topDocs.totalHits!=0){
 			Document doc = searcher.doc(topDocs.scoreDocs[0].doc);
 			splitted = doc.get(WebPage.TITLE);
-			System.out.println(splitted);
+			System.out.println("ricerche simili :  " + splitted);
 
 		}
 		

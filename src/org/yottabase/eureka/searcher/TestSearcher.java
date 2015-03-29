@@ -1,5 +1,9 @@
 package org.yottabase.eureka.searcher;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.WebPageSearchResult;
 
@@ -13,25 +17,31 @@ public class TestSearcher {
 
 		IndexSearch searcher = new IndexSearch();
 		SearchResult result = new SearchResult();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        boolean end=true;
+      
+        while(end){
+        	 String inputQuery=null;;
+     		try {
+     			System.out.println("dammi query");
+     			inputQuery= br.readLine();
+     			if(inputQuery.equals("exit")){
+     				end = false;
+     			}
+     			else{
+     				result = searcher.search(inputQuery, 1, 3);
+     	     		
+     	     		System.out.println(result.getItemsCount() + " risultati\n");
+     	     		System.out.println("Suggested searches: " + result.getSuggestedSearches().toString() + "\n");
+     	     		for (WebPageSearchResult page : result.getWebPages())
+     	     			System.out.println( page.toString() + "\n" );
+     	     		
+     			}
+     		} catch (IOException e) {
+     			e.printStackTrace();
+     		}
 
-		result = searcher.search("the", 1, 10);
-		
-		System.out.println(result.getItemsCount() + " risultati\n");
-		System.out.println("Suggested searches: " + result.getSuggestedSearches().toString() + "\n");
-		for (WebPageSearchResult page : result.getWebPages())
-			System.out.println( page.toString() + "\n" );
-		
-
-		System.out.println("-----------------------------------");
-		
-		searcher = new IndexSearch();
-		result = new SearchResult();
-		result = searcher.search("the", 2, 10);
-		
-		System.out.println(result.getItemsCount() + " risultati\n");
-		System.out.println("Suggested searches: " + result.getSuggestedSearches().toString() + "\n");
-		for (WebPageSearchResult page : result.getWebPages())
-			System.out.println( page.toString() + "\n" );
-
+        }
+       
 	}
 }

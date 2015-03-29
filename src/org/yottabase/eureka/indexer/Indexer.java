@@ -43,8 +43,7 @@ public class Indexer {
 		SpellChecker spellChecker;
 		DirectoryReader reader;
 		IndexWriterConfig configToDict;
-
-		
+	
 		Document doc;
 		WebPage webPage;
 		
@@ -75,8 +74,10 @@ public class Indexer {
 		
 		while ( (webPage = iManager.getNextWebPage()) != null ) {
 			doc = new Document();
+			Field title=new TextField(WebPage.TITLE, webPage.getTitle(), Field.Store.YES);
+			title.setBoost(2f);
+			doc.add(title);
 			doc.add(new StringField(WebPage.URL, webPage.getUrl(), Field.Store.YES));
-			doc.add(new TextField(WebPage.TITLE, webPage.getTitle(), Field.Store.YES));
 			doc.add(new TextField(WebPage.CONTENT, webPage.getContentWithoutTags(), Field.Store.YES));
 			doc.add(new LongField(WebPage.INDEXING_DATE, webPage.getIndexingDate().getTimeInMillis(), Field.Store.YES));
 
