@@ -15,6 +15,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
@@ -26,6 +27,7 @@ import org.apache.lucene.search.highlight.TokenSources;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.yottabase.eureka.core.SearchResult;
@@ -71,6 +73,7 @@ public class IndexSearch implements Searcher {
 					analyzer);
 			query = queryParser.parse( queryStr );
 			searcher.search(query, collector);
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -82,7 +85,8 @@ public class IndexSearch implements Searcher {
 		for (int i = 0; i < hits.length; i++) {
 			try {
 				int id = hits[i].doc;
-				Document doc = searcher.doc(id);;
+				Document doc = searcher.doc(id);
+
 				
 				WebPageSearchResult webPageSearchResult = 
 						documentToWebPageSearchResult(doc, query, id, WebPage.CONTENT, 3);
@@ -90,14 +94,28 @@ public class IndexSearch implements Searcher {
 				webPagesList.add( webPageSearchResult );
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			} 
 		}
+		/*
+		 * da valutare se mantenere 
+		 * 
+		 */
+	
+			try {
+				getMoreLikeThis(hits[0]);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+			}
+		
+		/* 
+		 */
 		
 		long endTimeQuery = System.currentTimeMillis();
 		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
 		/* suggestion */
-		Suggest suggestionEngine = new Suggest();
+		SearchSuggestion suggestionEngine = new SearchSuggestion();
 		List<String >suggestions = suggestionEngine.spell(queryStr);
 		
 		/* Filling in the search result values */
@@ -168,12 +186,37 @@ public class IndexSearch implements Searcher {
 
 	
 	@Override
+	/*
+	 * Dopo le modifiche apportate dovrei andare andare a modificare l'interfaccia di Search
+	 * 
+	 */
 	public List<String> autocomplete(String query) {
-		//todo modifica da 	spellChecker.setAccuracy(0.8f);
-
-		Suggest suggest_=new Suggest(0.8f);
-		List<String >suggestions =suggest_.spell(query);
+		SearchSuggestion suggest_=new SearchSuggestion();
+		List<String >suggestions =suggest_.autocomplete(query);
 		return suggestions;
+	}
+	
+	public String getMoreLikeThis(ScoreDoc hit) throws IOException, ParseException{
+
+		MoreLikeThis mlt = new MoreLikeThis(reader);
+		mlt.setAnalyzer(analyzer);
+		mlt.setFieldNames(new String[] {WebPage.CONTENT});
+		String splitted = null;
+		
+		Query query = mlt.like(hit.doc);
+		
+		TopDocs topDocs = searcher.search(query,10);
+		System.out.println("Found " + topDocs.totalHits + " hits.");
+		
+		if(topDocs.totalHits!=0){
+			Document doc = searcher.doc(topDocs.scoreDocs[0].doc);
+			splitted = doc.get(WebPage.TITLE);
+			System.out.println(splitted);
+
+		}
+		
+		
+		return splitted;
 	}
 	
 }
