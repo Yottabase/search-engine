@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
@@ -42,6 +43,7 @@ public class Indexer {
 		FSDirectory spellDir;
 		SpellChecker spellChecker;
 		DirectoryReader reader;
+		KeywordAnalyzer analyzerSuggest;
 		IndexWriterConfig configToDict;
 	
 		Document doc;
@@ -65,9 +67,10 @@ public class Indexer {
 		 */
 		spellDir = FSDirectory.open(new File(SearcherConfiguration.getDictionaryPath()));
 		spellChecker = new SpellChecker(spellDir);
-	    configToDict = new IndexWriterConfig(Version.LUCENE_47, analyzer);		
+		analyzerSuggest = new KeywordAnalyzer();
+	    configToDict = new IndexWriterConfig(Version.LUCENE_47, analyzerSuggest);		
 
-
+	    
 		System.out.println("Index creation...\n");
 		pages = 0;
 		start = System.currentTimeMillis();
@@ -100,7 +103,7 @@ public class Indexer {
 		 * create Dictionary
 		 */
 	    reader = DirectoryReader.open( index);
-		spellChecker.indexDictionary(new LuceneDictionary(reader,WebPage.CONTENT ), configToDict, true);
+		spellChecker.indexDictionary(new LuceneDictionary(reader,WebPage.TITLE ), configToDict, true);
 		
 		end = System.currentTimeMillis();
 		time = (end - start) / 1000d;
