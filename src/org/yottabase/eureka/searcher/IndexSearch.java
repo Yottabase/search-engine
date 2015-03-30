@@ -97,7 +97,7 @@ public class IndexSearch implements Searcher {
 		 * da valutare se mantenere 
 		 * 
 		 */
-
+		
 		try {
 			if(hits.length > 0)
 				getMoreLikeThis(hits[0]);

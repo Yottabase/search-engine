@@ -21,7 +21,6 @@ import org.yottabase.eureka.core.WebPage;
 public class SearchSuggestion {
 	private Directory spellDir;
 	private SpellChecker spellChecker;
-	private float accuracy=0.8f;
 	
 	public List<String> autocomplete(String query) {
 		List<String> result = new ArrayList<String>();
@@ -70,26 +69,26 @@ public class SearchSuggestion {
 		try {
 			spellDir = FSDirectory.open(new File(SearcherConfiguration.getDictionaryPath()));
 			spellChecker = new SpellChecker(spellDir);
-
-			// To index a field of a user index:
-			spellChecker.setAccuracy(accuracy);
+			spellChecker.setAccuracy(0.8f);
 			
 			/*
-			 * da valutare l'inserimento del ciclo for che inverte la lista perche dovrebbe migliorare le risposte dei suggerimenti
+			 * se query è composta da più keywords
 			 */
-			queryString = queryString.trim();
 			if (queryString.contains(" ")) {
+			    boolean find=false;
+			    
 			    String[] parts = queryString.split(" ");
+			   
 			    for (int i = 0; i < parts.length; i++) {
 					listSuggest = spellChecker.suggestSimilar(parts[i], 10);
-					if ( listSuggest.length != 0 ) {
+					if ( listSuggest.length > 0 ) {
+					    find =true;
 						similarWordsConcat += (listSuggest[listSuggest.length-1]);
 						similarWordsConcat += " ";
 					}
 				}
-			    
-			    similarWordsConcat.trim();
-				Collections.addAll(similarWords,similarWordsConcat);
+			    if(find)
+			    	Collections.addAll(similarWords,similarWordsConcat);
 
 			} else{
 				listSuggest = spellChecker.suggestSimilar(queryString, 10);
