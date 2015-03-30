@@ -33,6 +33,15 @@ public class SearchSuggestion {
 	public List<String> autocomplete(String query) {
 		List<String> result = new ArrayList<String>();
 		
+		String prefix = "";
+		
+		query = query.trim();
+		
+		if(query.contains(" ")) {
+			prefix = query.substring(0, query.lastIndexOf(' ')) + ' ';
+			query = query.substring(query.lastIndexOf(' ') + 1);
+		}
+		
 		try {
 			Lookup lookup = new TSTLookup();
 			Directory indexPathDir = FSDirectory.open(new File(SearcherConfiguration.getIndexPath()));
@@ -45,11 +54,9 @@ public class SearchSuggestion {
 			List<LookupResult> resultsList = lookup.lookup(query, false, 30);
 			
 			for(LookupResult lr : resultsList){
-				System.out.println(lr);
-				
 				String v = lr.key.toString();
 				if( !v.equals(query) ){
-					result.add(v);
+					result.add(prefix + v);
 				}
 			}
 		
