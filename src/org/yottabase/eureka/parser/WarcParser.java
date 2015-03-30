@@ -18,14 +18,6 @@ public class WarcParser implements Parser {
 	
 	
 	public WarcParser(String sourceInputPath) {
-		init(sourceInputPath);
-	}
-	
-	/**
-	 * Punta il reader Warc sul file al path passato come parametro
-	 * @param sourceInputPath
-	 */
-	private void init(String sourceInputPath) {
 		File file = new File(sourceInputPath);
 		
 		try {
@@ -38,7 +30,6 @@ public class WarcParser implements Parser {
 		catch (IOException e) {
             e.printStackTrace();
 		}
-		
 	}
 
 	/**
@@ -56,16 +47,6 @@ public class WarcParser implements Parser {
 		}
 		
 		return record;
-	}
-
-	/**
-	 * Aggiorna la sorgente di input con un nuovo file al path
-	 * passato come parametro
-	 */
-	@Override
-	public void updateInputSource(String newInputSourcePath) {
-		close();
-		init(newInputSourcePath);
 	}
 
 	/**

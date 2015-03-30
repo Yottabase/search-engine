@@ -5,8 +5,9 @@
 	<div id="search-form">
 
 		<div id="brand">
+			<a href="search.do">
 			<img alt="" class="img-responsive center-block"
-				src="assets/images/brand.jpg">
+				src="assets/images/brand.jpg"></a>
 		</div>
 
 		<form>
@@ -42,6 +43,12 @@
 					</div>
 				</div>
 			</div>
+			
+			<nav class="text-center">
+			  <div id="pagination">
+			  	<!-- qui ci vanno i numeri di pagina -->
+			  </div>
+			</nav>
 	</div>
 
 

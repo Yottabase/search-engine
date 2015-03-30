@@ -1,7 +1,6 @@
 package org.yottabase.eureka.ui.web.stub;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.yottabase.eureka.core.SearchResult;
@@ -13,34 +12,23 @@ public class StubSearcher implements Searcher{
 	@Override
 	public SearchResult search(String query, Integer page, Integer itemInPage) {
 		
-		
-		ArrayList<String> skippedWords= new ArrayList<String>();
-		skippedWords.add("skip");
-		skippedWords.add("high2");
-		
 		List<WebPageSearchResult> webPages = new ArrayList<WebPageSearchResult>();
 		webPages.add(new WebPageSearchResult(
 			"Christian", 
 			"Ciao sono uno snippet", 
-			"http://www.google.it", 
-			skippedWords,
-			new GregorianCalendar(2012,10,1)
+			"http://www.google.it"
 		));
 		
 		webPages.add(new WebPageSearchResult(
 			"Leonardo", 
 			"Ciao sono un professor snippet ", 
-			"http://www.google.it/leonardo.proff", 
-			new ArrayList<String>(),
-			new GregorianCalendar(1015,12,4)
+			"http://www.google.it/leonardo.proff"
 		));
 		
 		webPages.add(new WebPageSearchResult(
 			"Alessandro", 
 			"Ciao sono uno snippet assistente del proff Leonardo", 
-			"http://www.google.it/leonardo.proff/alessandro", 
-			new ArrayList<String>(),
-			new GregorianCalendar(2013,2,54)
+			"http://www.google.it/leonardo.proff/alessandro"
 		));
 		
 		SearchResult result = new SearchResult();

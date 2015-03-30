@@ -1,8 +1,6 @@
 package org.yottabase.eureka.ui.web.action;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,11 +29,18 @@ public class ApiSearchAction implements Action{
 	public void run(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-		
-		//TODO aggiungere qualche controllo sugli input q, page, lastDocId, lastDocScore?
 		String q =  request.getParameter("q");
-		Integer page = Integer.parseInt(request.getParameter("page"));
+		if(q == null || q.length() == 0 ){
+			response.getWriter().write("Il parametro q è obbligatorio");
+			return;
+		}
+		
+		String pageParam = request.getParameter("page");
+		if(pageParam == null || pageParam.length() == 0 ){
+			response.getWriter().write("Il parametro page è obbligatorio");
+			return;
+		}
+		Integer page = Integer.parseInt(pageParam);
 		
 		Searcher searcher = this.getSearcher();
 		SearchResult result = searcher.search(q, page, this.itemInPage);
@@ -56,10 +61,6 @@ public class ApiSearchAction implements Action{
 			item.put("title", webPage.getTitle());
 			item.put("highlightedSnippet", webPage.getHighlightedSnippet());
 			item.put("url", webPage.getUrl());
-			item.put("date", df.format(webPage.getDate().getTime()));
-			
-			JSONArray skippedWords = new JSONArray(webPage.getSkippedWords().toArray());
-			item.put("skippedWords", skippedWords);
 			
 			items.put(item);
 		}

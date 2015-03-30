@@ -6,6 +6,7 @@
     <script src="assets/js/bloodhound.min.js"></script>
     <script src="assets/js/typeahead.jquery.min.js"></script>
     <script src="assets/js/annyang.min.js"></script>
+    <script src="assets/js/jquery.bootpag.min.js"></script>
     <script src="assets/js/scripts.js"></script>
     <body>
 </html>

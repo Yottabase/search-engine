@@ -2,8 +2,6 @@ package org.yottabase.eureka.searcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,8 +26,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.yottabase.eureka.core.SearchResult;
 import org.yottabase.eureka.core.Searcher;
 import org.yottabase.eureka.core.WebPage;
@@ -67,13 +65,12 @@ public class IndexSearch implements Searcher {
 		TopScoreDocCollector collector = TopScoreDocCollector.create(slotsNumber, true);
 
 		try {
-			MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
+			QueryParser queryParser = new QueryParser(
 					Version.LUCENE_47, 
-					new String[] { WebPage.CONTENT, WebPage.TITLE }, 
+					WebPage.CONTENT, 
 					analyzer);
 			query = queryParser.parse( queryStr );
 			searcher.search(query, collector);
-			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -100,13 +97,13 @@ public class IndexSearch implements Searcher {
 		 * da valutare se mantenere 
 		 * 
 		 */
-	
+	/*
 			try {
 				getMoreLikeThis(hits[0]);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
-			}
+			}*/
 		
 		/* 
 		 */
@@ -137,18 +134,11 @@ public class IndexSearch implements Searcher {
 		
 		String title = doc.get( WebPage.TITLE );
 		String url = doc.get( WebPage.URL );
-		String dateStr = doc.get( WebPage.INDEXING_DATE );
 		String snippet = getHighlightedSnippet(query, doc, docID, snippedDocField);
-//		List<String> skippedWords = getSkippedWords();	// TODO
-		
-		Calendar date = new GregorianCalendar();
-		date.setTimeInMillis(Long.parseLong(dateStr));
 		
 		page.setTitle(title);
 		page.setHighlightedSnippet(snippet);
 		page.setUrl(url);
-		page.setDate(date);
-//		page.setSkippedWords(skippedWords);
 		return page;
 	}
 	
@@ -173,14 +163,18 @@ public class IndexSearch implements Searcher {
 	    	TokenStream tokenStream = TokenSources.getAnyTokenStream(searcher.getIndexReader(), id, field, analyzer);
 	    	TextFragment[] fragments = highlighter.getBestTextFragments(tokenStream, text, false, 3);
 	    	
-	    	for (TextFragment frag : fragments)
-	    		highlights += frag.toString() + "..." + "\n";
+	    	for (TextFragment frag : fragments) {
+	    		String fragment = frag.toString();
+	    		fragment = fragment.replaceAll("^[^\\w]*", "");
+	    		fragment = fragment.replaceAll("[^\\w]*$", "");
+	    		
+	    		highlights += fragment + "..." + "\n";
+	    	}
 	    	
 		} catch (IOException | InvalidTokenOffsetsException e) {
 			e.printStackTrace();
 		}
-	    
-	    // TODO deve ritornare una stringa
+
 	    return highlights;
 	}
 
