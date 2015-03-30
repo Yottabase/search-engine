@@ -84,6 +84,7 @@ public class SearchSuggestion {
 			/*
 			 * da valutare l'inserimento del ciclo for che inverte la lista perche dovrebbe migliorare le risposte dei suggerimenti
 			 */
+			queryString = queryString.trim();
 			if (queryString.contains(" ")) {
 			    String[] parts = queryString.split(" ");
 			    for (int i = 0; i < parts.length; i++) {
