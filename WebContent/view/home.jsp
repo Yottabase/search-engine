@@ -5,8 +5,9 @@
 	<div id="search-form">
 
 		<div id="brand">
+			<a href="search.do">
 			<img alt="" class="img-responsive center-block"
-				src="assets/images/brand.jpg">
+				src="assets/images/brand.jpg"></a>
 		</div>
 
 		<form>
