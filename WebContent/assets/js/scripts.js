@@ -165,14 +165,23 @@ function drawPageNumbers(currentPage, itemsCount, itemsInPage){
 jQuery( document ).ready(function( $ ) {
 	if(annyang){
 		var commands = {
-		'ciao': function() { 
-			alert('Hello world!'); 
-		},
-		'cercami *query': function(query) {
-			console.log(query);
+			'ciao': function() { 
+				alert('Hello world!'); 
+			},
+			'cercami *query': function(query) {
+				
 				$('#search-input').val(query);
 				clearResults();
 				performQuery(query, 1);
+			},
+			'pagina :page': function(page) {
+				
+				var q = $('#search-input').val();
+				clearResults();
+				
+				if(q.length != 0){
+					performQuery(q, page);	
+				}
 			},
 		};
 		
