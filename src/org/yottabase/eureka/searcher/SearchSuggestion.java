@@ -38,15 +38,19 @@ public class SearchSuggestion {
 			Directory indexPathDir = FSDirectory.open(new File(SearcherConfiguration.getIndexPath()));
 			IndexReader ir = DirectoryReader.open(indexPathDir);
 			
-			Dictionary dictionary = new LuceneDictionary(ir, WebPage.CONTENT);
+			Dictionary dictionary = new LuceneDictionary(ir, WebPage.TITLE);
 			
 			lookup.build(dictionary);
 			
-			List<LookupResult> resultsList = lookup.lookup(query, false, 5);
+			List<LookupResult> resultsList = lookup.lookup(query, false, 30);
 			
 			for(LookupResult lr : resultsList){
 				System.out.println(lr);
-				result.add(lr.key.toString());
+				
+				String v = lr.key.toString();
+				if( !v.equals(query) ){
+					result.add(v);
+				}
 			}
 		
 		} catch (IOException e) {
