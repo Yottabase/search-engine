@@ -79,11 +79,16 @@ function performQuery(query, page){
 		//disegna nuovi blocchi
 		data.webPages.forEach(function(item){
 			
+			var url = item.url;
+			if (url.length > 90){
+				url = url.substring(0,90) + '...';
+			}
+			
 			//crea item di output
 			var resultBlock = webPageTemplate.clone();
 			resultBlock.find('.title a').text(item.title);
 			resultBlock.find('.snippet').html(item.highlightedSnippet);
-			resultBlock.find('.url a').text(item.url);
+			resultBlock.find('.url a').text(url);
 			resultBlock.find('a').prop('href',item.url);
 			resultsBlock.append(resultBlock);
 		});
