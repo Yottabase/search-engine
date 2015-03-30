@@ -4,7 +4,7 @@ public class SearcherConfiguration {
 	
 	
 	public static String getIndexPath(){
-		return "index";
+		return "/Users/chri/git/searchengine/index";
 	}
 	
 

@@ -6,9 +6,9 @@ public class WebPage {
 	
 	public final static String TITLE = "title";
 	
-	public final static String CONTENT = "content";
+	public final static String CONTENT = "text";
 	
-	public final static String CONTENT_WITH_TAGS = "contentWithTags";
+	public final static String CONTENT_WITH_TAGS = "fullText";
 	
 	/**
 	 * Url della pagina
@@ -21,12 +21,12 @@ public class WebPage {
 	private String title;
 
 	/**
-	 * Body della pagina html senza tags
+	 * Body della pagina html
 	 */
 	private String content;
 
 	/**
-	 * Body della pagina html con tags
+	 * Body della pagina html senza tags
 	 */
 	private String contentWithTags;
 
