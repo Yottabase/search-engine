@@ -62,9 +62,6 @@ public class ApiSearchAction implements Action{
 			item.put("highlightedSnippet", webPage.getHighlightedSnippet());
 			item.put("url", webPage.getUrl());
 			
-			JSONArray skippedWords = new JSONArray(webPage.getSkippedWords().toArray());
-			item.put("skippedWords", skippedWords);
-			
 			items.put(item);
 		}
 		

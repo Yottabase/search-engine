@@ -1,8 +1,5 @@
 package org.yottabase.eureka.core;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class WebPageSearchResult {
 
 	/**
@@ -19,22 +16,15 @@ public class WebPageSearchResult {
 	 * Url della pagina
 	 */
 	private String url;
-
-	/**
-	 * Elenco dei termini di ricerca saltati durante la query
-	 */
-	private List<String> skippedWords;
 	
 	public WebPageSearchResult() {
-		this.skippedWords = new LinkedList<String>();
+		super();
 	}
 
-	public WebPageSearchResult(String title, String highlightedSnippet, String url, 
-			List<String> skippedWords) {
+	public WebPageSearchResult(String title, String highlightedSnippet, String url) {
 		this.title = title;
 		this.highlightedSnippet = highlightedSnippet;
 		this.url = url;
-		this.skippedWords = skippedWords;
 	}
 
 	public String getTitle() {
@@ -61,24 +51,11 @@ public class WebPageSearchResult {
 		this.url = url;
 	}
 
-	public List<String> getSkippedWords() {
-		return skippedWords;
-	}
-
-	public void setSkippedWords(List<String> skippedWords) {
-		this.skippedWords = skippedWords;
-	}
-	
-	public boolean addSkippedWord(String skippedWord) {
-		return this.skippedWords.add(skippedWord);
-	}
-
 	@Override
 	public String toString() {
 		return "WebPageSearchResult" + "\n" +
 				"\t" + "TITLE" + "\t\t" + title + "\n" +
 				"\t" + "SNIPPET" + "\t\t" + highlightedSnippet + "\n" +
-				"\t" + "SKIPPED" + "\t\t" + skippedWords + "\n" +
 				"\t" + "URL" + "\t\t" + url + "\n";
 	}
 	

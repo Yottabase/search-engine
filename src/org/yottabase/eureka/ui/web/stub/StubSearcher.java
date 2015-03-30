@@ -12,31 +12,23 @@ public class StubSearcher implements Searcher{
 	@Override
 	public SearchResult search(String query, Integer page, Integer itemInPage) {
 		
-		
-		ArrayList<String> skippedWords= new ArrayList<String>();
-		skippedWords.add("skip");
-		skippedWords.add("high2");
-		
 		List<WebPageSearchResult> webPages = new ArrayList<WebPageSearchResult>();
 		webPages.add(new WebPageSearchResult(
 			"Christian", 
 			"Ciao sono uno snippet", 
-			"http://www.google.it", 
-			skippedWords
+			"http://www.google.it"
 		));
 		
 		webPages.add(new WebPageSearchResult(
 			"Leonardo", 
 			"Ciao sono un professor snippet ", 
-			"http://www.google.it/leonardo.proff", 
-			new ArrayList<String>()
+			"http://www.google.it/leonardo.proff"
 		));
 		
 		webPages.add(new WebPageSearchResult(
 			"Alessandro", 
 			"Ciao sono uno snippet assistente del proff Leonardo", 
-			"http://www.google.it/leonardo.proff/alessandro", 
-			new ArrayList<String>()
+			"http://www.google.it/leonardo.proff/alessandro"
 		));
 		
 		SearchResult result = new SearchResult();

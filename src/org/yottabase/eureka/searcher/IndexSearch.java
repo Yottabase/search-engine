@@ -114,12 +114,10 @@ public class IndexSearch implements Searcher {
 		String title = doc.get( WebPage.TITLE );
 		String url = doc.get( WebPage.URL );
 		String snippet = getHighlightedSnippet(query, doc, docID, snippedDocField);
-//		List<String> skippedWords = getSkippedWords();	// TODO
 		
 		page.setTitle(title);
 		page.setHighlightedSnippet(snippet);
 		page.setUrl(url);
-//		page.setSkippedWords(skippedWords);
 		return page;
 	}
 	
