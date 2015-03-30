@@ -20,6 +20,18 @@ jQuery( document ).ready(function( $ ) {
 	});
 });
 
+/*** gestione click pulsante ***/
+jQuery( document ).ready(function( $ ) {
+	$('#search-button').on('click submit', function(event){
+		var q = $('#search-input').val();
+		clearResults();
+		if(q.length != 0){
+			performQuery(q);
+		}
+		event.preventDefault();
+	});
+});
+
 /*** autocompletamento ***/
 jQuery( document ).ready(function( $ ) {	
 

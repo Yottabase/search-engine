@@ -19,7 +19,7 @@
 							placeholder="Cosa vuoi cercare oggi?" id="search-input"  autocomplete="off"> 
 						
 						<span class="input-group-btn">
-							<button class="btn btn-primary btn-lg" type="button">
+							<button class="btn btn-primary btn-lg" type="submit" id="search-button">
 								<span class="glyphicon glyphicon-search" aria-hidden="true"></span> Cerca
 								</button>
 						</span>
