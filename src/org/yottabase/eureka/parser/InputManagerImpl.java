@@ -10,6 +10,8 @@ import java.util.Scanner;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jwat.common.HttpHeader;
+import org.jwat.common.Payload;
 import org.jwat.warc.WarcHeader;
 import org.jwat.warc.WarcRecord;
 import org.yottabase.eureka.core.InputManager;
@@ -88,28 +90,30 @@ public class InputManagerImpl implements InputManager {
 		WebPage page;
 		
 		do {
-			// Se esistente prendi un record non nullo
-			// Un record è nullo quando l'input corrente è terminato
-			// Se ci sono altri input ma sono vuoti i record successivi possono continuare ad essere nulli
+			page = new WebPage();
 			
-			while ( ((record = parser.getNextRecord()) == null) && this.hasNextInputSource() )
+			/*	Se esistente prendi un record non nullo
+			 * 	Un record è nullo quando l'input corrente è terminato
+			 * 	Se ci sono altri input ma sono vuoti i record successivi possono continuare ad essere nulli
+			 */
+			while ( (record = parser.getNextRecord()) == null && this.hasNextInputSource() )
 				loadNextInputSource();
 			
-			// Se il miglior record pescato tra tutti i file di input rimanenti è comunque nullo
-			// allora l'input è terminato: si chiude il parser
-			
+			/*	Se il miglior record pescato tra tutti i file di input rimanenti è comunque nullo
+			 * 	allora l'input è terminato: si chiude il parser
+			 */
 			if ( record == null ) {
 				parser.close();
 				return null;
 			}
 			
-			// Trasforma il record in una web-page
+			/*	Trasforma il record in una web-page */
+			if ( isValid(record) )
+				page = warcRecordToWebPage(record);
 			
-			page = warcRecordToWebPage(record);
-			
-			// Esegui questi passi fin tanto che la web-page generata non è valida 
-			// oppure finchè la web-page non è nulla (web-page nulla = fine input)
-			
+			/*	Esegui questi passi fin tanto che la web-page generata non è valida
+			 * 	oppure finchè la web-page non è nulla (web-page nulla = fine input)
+			 */
 		} while ( !isValid(page) );
 		
 		trim(page);
@@ -160,12 +164,13 @@ public class InputManagerImpl implements InputManager {
 	 */
 	private WebPage warcRecordToWebPage(WarcRecord record) {
 		WebPage webPage = new WebPage();
+		
 		WarcHeader warcHeader = record.header;
 		InputStream payloadContentStream = record.getPayloadContent();
-		Document htmlPage = (payloadContentStream != null) ? 
-				Jsoup.parse(streamToString( payloadContentStream )) : null;
+		
+		Document htmlPage = Jsoup.parse(streamToString( payloadContentStream ));
 				
-		if ( (warcHeader != null) && (htmlPage != null) ) {
+		if ( htmlPage != null ) {
 			
 			/* Metadati della pagina (header WARC) */
 			webPage.setUrl( warcHeader.warcTargetUriStr );
@@ -197,6 +202,49 @@ public class InputManagerImpl implements InputManager {
 		scan.close();
 		
 		return str;
+	}
+	
+	/**
+	 * 
+	 * @param record
+	 * @return
+	 */
+	public boolean isValid(WarcRecord record) {
+		boolean validRecord = false;
+		
+		if (record != null) {	
+			/* Check whether the record is a response */
+			WarcHeader warcHeader = record.header;
+			
+			if ( warcHeader != null ) {
+				String warcType = warcHeader.warcTypeStr;	
+					
+				if ( warcType.equals("response") ) {
+					/* Check whether the ContentType HTTP is 'text/html' */
+					Payload payload = record.getPayload();
+					
+					if ( payload != null ) {
+						HttpHeader httpHeader = payload.getHttpHeader();
+						
+						if ( httpHeader != null ) {
+							String headerContentType = httpHeader.contentType;
+							
+							if ( headerContentType != null && headerContentType.contains("text/html") ) {
+								/* Check whether an input stream for the content is available */
+								InputStream payloadContent = record.getPayloadContent();
+								
+								if ( payloadContent != null ) {
+									/* The record has all the required fields and values */
+									validRecord = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return validRecord;
 	}
 	
 	/**

@@ -43,7 +43,8 @@ public class WarcParser implements Parser {
 		try {
 			record = reader.getNextRecord();
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace();		
+			return getNextRecord();
 		}
 		
 		return record;
