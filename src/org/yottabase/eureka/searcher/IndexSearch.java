@@ -77,13 +77,14 @@ public class IndexSearch implements Searcher {
 
 		ScoreDoc[] hits = collector.topDocs((page-1)*itemInPage, page*itemInPage-1 ).scoreDocs;
 		List<WebPageSearchResult> webPagesList = new LinkedList<WebPageSearchResult>();
+		boolean doSnippet = !(queryStr.contains("\"") || queryStr.contains("?") || queryStr.contains("*"));
 		for (int i = 0; i < hits.length; i++) {
 			try {
 				int id = hits[i].doc;
 				Document doc = searcher.doc(id);;
-				
+	
 				WebPageSearchResult webPageSearchResult = 
-						documentToWebPageSearchResult(doc, query, id, WebPage.CONTENT, 3);
+						documentToWebPageSearchResult(doc, query, id, WebPage.CONTENT, 3, doSnippet);
 				
 				webPagesList.add( webPageSearchResult );
 			} catch (IOException e) {
@@ -107,13 +108,13 @@ public class IndexSearch implements Searcher {
 	
 	
 	private WebPageSearchResult documentToWebPageSearchResult(
-			Document doc, Query query, int docID, String snippedDocField, int snippetFragsNum) {
+			Document doc, Query query, int docID, String snippedDocField, int snippetFragsNum, boolean doSnippet) {
 		
 		WebPageSearchResult page = new WebPageSearchResult();
 		
 		String title = doc.get( WebPage.TITLE );
 		String url = doc.get( WebPage.URL );
-		String snippet = getHighlightedSnippet(query, doc, docID, snippedDocField);
+		String snippet = (doSnippet) ? getHighlightedSnippet(query, doc, docID, snippedDocField) : "";
 		
 		page.setTitle(title);
 		page.setHighlightedSnippet(snippet);
@@ -130,10 +131,12 @@ public class IndexSearch implements Searcher {
 	 * @return
 	 */
 	private String getHighlightedSnippet(Query query, Document doc, int id, String field) {
-		String highlights = new String();
+		String snippet = new String();
 		
 		SimpleHTMLFormatter htmlFormatter = new SimpleHTMLFormatter();
 		QueryScorer scorer = new QueryScorer(query);
+		scorer.setExpandMultiTermQuery(true);
+		
 		Highlighter highlighter = new Highlighter(htmlFormatter, scorer);
 		String text = doc.get(field);
 		
@@ -147,14 +150,14 @@ public class IndexSearch implements Searcher {
 	    		fragment = fragment.replaceAll("^[^\\w]*", "");
 	    		fragment = fragment.replaceAll("[^\\w]*$", "");
 	    		
-	    		highlights += fragment + "..." + "\n";
+	    		snippet += fragment + "..." + "\n";
 	    	}
 	    	
 		} catch (IOException | InvalidTokenOffsetsException e) {
 			e.printStackTrace();
 		}
 
-	    return highlights;
+	    return snippet;
 	}
 
 	
