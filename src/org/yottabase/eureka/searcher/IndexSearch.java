@@ -113,7 +113,7 @@ public class IndexSearch implements Searcher {
 		
 		/* suggestion */
 		SearchSuggestion suggestionEngine = new SearchSuggestion();
-		List<String >suggestions = suggestionEngine.spell(queryStr);
+		List<String >suggestions = suggestionEngine.didYouMean(queryStr);
 		
 		/* Filling in the search result values */
 		searchResult.setItemsCount( collector.getTotalHits() );

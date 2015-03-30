@@ -29,7 +29,7 @@ public class TestSearcher {
      				end = false;
      			}
      			else{
-     				result = searcher.search(inputQuery, 1, 3);
+     				result = searcher.search(inputQuery, 1, 10);
      	     		
      	     		System.out.println(result.getItemsCount() + " risultati\n");
      	     		System.out.println("Suggested searches: " + result.getSuggestedSearches().toString() + "\n");
