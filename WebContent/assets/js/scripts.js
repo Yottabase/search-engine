@@ -108,7 +108,12 @@ function performQuery(query, page){
 		//aggiunge ricerche suggerite
 		if(data.suggestedSearch.length > 0){
 			data.suggestedSearch.forEach(function(item){
-				$('#suggested-search .words').append('<a href="#">'+item+'</a>');
+				$('#suggested-search .words').append($('<a href="#">'+item+'</a>').click(function(){
+					var query = $(this).text();
+					$('#search-input').val(query);
+					clearResults();
+					performQuery(query, 1);
+				}));
 			});
 			$('#suggested-search').show();
 		}
