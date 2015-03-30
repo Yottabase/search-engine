@@ -4,13 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.spell.Dictionary;
@@ -18,11 +13,9 @@ import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.search.suggest.Lookup;
 import org.apache.lucene.search.suggest.Lookup.LookupResult;
-import org.apache.lucene.search.suggest.analyzing.FreeTextSuggester;
 import org.apache.lucene.search.suggest.tst.TSTLookup;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 import org.yottabase.eureka.core.WebPage;
 
 public class SearchSuggestion {
@@ -89,11 +82,13 @@ public class SearchSuggestion {
 			    String[] parts = queryString.split(" ");
 			    for (int i = 0; i < parts.length; i++) {
 					listSuggest = spellChecker.suggestSimilar(parts[i], 10);
-					if(listSuggest.length!=0){
-						similarWordsConcat+=(listSuggest[listSuggest.length-1]);
-						similarWordsConcat+=" ";
+					if ( listSuggest.length != 0 ) {
+						similarWordsConcat += (listSuggest[listSuggest.length-1]);
+						similarWordsConcat += " ";
 					}
 				}
+			    
+			    similarWordsConcat.trim();
 				Collections.addAll(similarWords,similarWordsConcat);
 
 			} else{

@@ -97,16 +97,15 @@ public class IndexSearch implements Searcher {
 		 * da valutare se mantenere 
 		 * 
 		 */
-	/*
-			try {
+
+		try {
+			if(hits.length > 0)
 				getMoreLikeThis(hits[0]);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
-			}*/
-		
-		/* 
-		 */
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
 		long endTimeQuery = System.currentTimeMillis();
 		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
@@ -114,6 +113,7 @@ public class IndexSearch implements Searcher {
 		/* suggestion */
 		SearchSuggestion suggestionEngine = new SearchSuggestion();
 		List<String >suggestions = suggestionEngine.didYouMean(queryStr);
+		
 		
 		/* Filling in the search result values */
 		searchResult.setItemsCount( collector.getTotalHits() );
@@ -185,30 +185,33 @@ public class IndexSearch implements Searcher {
 	 * 
 	 */
 	public List<String> autocomplete(String query) {
-		SearchSuggestion suggest_=new SearchSuggestion();
-		List<String >suggestions =suggest_.autocomplete(query);
+		SearchSuggestion suggest = new SearchSuggestion();
+		List<String> suggestions = suggest.autocomplete(query);
 		return suggestions;
 	}
 	
-	public String getMoreLikeThis(ScoreDoc hit) throws IOException, ParseException{
-
+	/**
+	 * 
+	 * @param hit
+	 * @return
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public String getMoreLikeThis(ScoreDoc hit) throws IOException, ParseException {
 		MoreLikeThis mlt = new MoreLikeThis(reader);
 		mlt.setAnalyzer(analyzer);
-		mlt.setFieldNames(new String[] {WebPage.CONTENT});
+		mlt.setFieldNames(new String[] { WebPage.CONTENT });
+		
 		String splitted = null;
 		
 		Query query = mlt.like(hit.doc);
-
-		TopDocs topDocs = searcher.search(query,10);		
-		int i=0;
-		while(topDocs.totalHits>5 && i<=4){
+		TopDocs topDocs = searcher.search(query,10);
+		
+		for (int i = 0; i < 5; i++) {
 			Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 			splitted = doc.get(WebPage.TITLE);
 			System.out.println("ricerche simili :  " + splitted);
-			i++;
 		}
-		
-		
 		return splitted;
 	}
 	
