@@ -183,6 +183,21 @@ jQuery( document ).ready(function( $ ) {
 					performQuery(q, page);	
 				}
 			},
+			'scendi' : function(page) {
+				$('body').animate({
+				      scrollTop: $(document).height() - $(window).height()
+				    }, 5000
+				);
+			},
+			'sali' : function(page) {
+				$('body').animate({
+				      scrollTop: 0
+				    }, 5000
+				);
+			},
+			'stop' : function(page) {
+				$('body').stop(true, true);
+			},
 		};
 		
 		annyang.addCommands(commands);
