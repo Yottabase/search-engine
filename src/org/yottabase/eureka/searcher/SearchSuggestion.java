@@ -88,7 +88,7 @@ public class SearchSuggestion {
 			if (queryString.contains(" ")) {
 			    String[] parts = queryString.split(" ");
 			    for (int i = 0; i < parts.length; i++) {
-					listSuggest=spellChecker.suggestSimilar(parts[i], 10);
+					listSuggest = spellChecker.suggestSimilar(parts[i], 10);
 					if(listSuggest.length!=0){
 						similarWordsConcat+=(listSuggest[listSuggest.length-1]);
 						similarWordsConcat+=" ";
@@ -97,9 +97,14 @@ public class SearchSuggestion {
 				Collections.addAll(similarWords,similarWordsConcat);
 
 			} else{
-				listSuggest=spellChecker.suggestSimilar(queryString, 10);
-				if(listSuggest.length!=0){
-					similarWords.add(listSuggest[(listSuggest.length)-1]);
+				listSuggest = spellChecker.suggestSimilar(queryString, 10);
+				
+				int last = listSuggest.length - 1;
+				if (listSuggest.length > 1) {
+					if ( (listSuggest[last]).equals(queryString) )
+						last--;
+					
+					similarWords.add(listSuggest[last]);
 				}
 			}
 			
