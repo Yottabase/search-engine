@@ -153,8 +153,7 @@ public class IndexSearch implements Searcher {
 		} catch (IOException | InvalidTokenOffsetsException e) {
 			e.printStackTrace();
 		}
-	    
-	    // TODO deve ritornare una stringa
+
 	    return highlights;
 	}
 
