@@ -2,8 +2,6 @@ package org.yottabase.eureka.searcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -115,17 +113,12 @@ public class IndexSearch implements Searcher {
 		
 		String title = doc.get( WebPage.TITLE );
 		String url = doc.get( WebPage.URL );
-		String dateStr = doc.get( WebPage.INDEXING_DATE );
 		String snippet = getHighlightedSnippet(query, doc, docID, snippedDocField);
 //		List<String> skippedWords = getSkippedWords();	// TODO
-		
-		Calendar date = new GregorianCalendar();
-		date.setTimeInMillis(Long.parseLong(dateStr));
 		
 		page.setTitle(title);
 		page.setHighlightedSnippet(snippet);
 		page.setUrl(url);
-		page.setDate(date);
 //		page.setSkippedWords(skippedWords);
 		return page;
 	}

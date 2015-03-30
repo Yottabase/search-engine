@@ -1,7 +1,5 @@
 package org.yottabase.eureka.core;
 
-import java.util.Calendar;
-
 public class WebPage {
 	
 	public final static String URL = "url";
@@ -12,8 +10,6 @@ public class WebPage {
 	
 	public final static String CONTENT_WITH_TAGS = "contentWithTags";
 	
-	public final static String INDEXING_DATE = "indexingDate";
-
 	/**
 	 * Url della pagina
 	 */
@@ -33,11 +29,6 @@ public class WebPage {
 	 * Body della pagina html con tags
 	 */
 	private String contentWithTags;
-
-	/**
-	 * La data in cui è stato eseguito il crawling della pagina
-	 */
-	private Calendar indexingDate;
 
 	public String getUrl() {
 		return url;
@@ -70,19 +61,10 @@ public class WebPage {
 	public void setContentWithTags(String contentWithTags) {
 		this.contentWithTags = contentWithTags;
 	}
-
-	public Calendar getIndexingDate() {
-		return indexingDate;
-	}
-
-	public void setIndexingDate(Calendar indexingDate) {
-		this.indexingDate = indexingDate;
-	}
-
+	
 	@Override
 	public String toString() {
-		return "WebPage [url=" + url + ", title=" + title + ", indexingDate="
-				+ indexingDate + "]";
+		return "WebPage [url=" + url + ", title=" + title + "]";
 	}
 
 }

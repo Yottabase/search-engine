@@ -2,8 +2,6 @@ package org.yottabase.eureka.parser;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -172,22 +170,6 @@ public class InputManagerImpl implements InputManager {
 			/* Metadati della pagina (header WARC) */
 			webPage.setUrl( warcHeader.warcTargetUriStr );
 			
-			String dateString = warcHeader.warcDateStr;
-			String[] dateComps = dateString.
-					substring(0, dateString.indexOf("T")).
-					split("-");
-			String[] timeComps = dateString.
-					substring(dateString.indexOf("T") + 1, dateString.lastIndexOf("-")).
-					split(":");	
-			Calendar date = new GregorianCalendar(
-					Integer.parseInt( dateComps[0] ),
-					Integer.parseInt( dateComps[1] ),
-					Integer.parseInt( dateComps[2] ),
-					Integer.parseInt( timeComps[0] ),
-					Integer.parseInt( timeComps[1] ),
-					Integer.parseInt( timeComps[2] ));
-			webPage.setIndexingDate( date );
-			
 			/* Contenuto della pagina	 */
 			webPage.setTitle( htmlPage.title() );
 			
@@ -224,8 +206,7 @@ public class InputManagerImpl implements InputManager {
 	 * @return
 	 */
 	private boolean isValid(WebPage page) {
-		return (( page.getIndexingDate() != null ) &&
-				( page.getUrl() != null ) && ( page.getUrl().length() != 0 ) &&
+		return (( page.getUrl() != null ) && ( page.getUrl().length() != 0 ) &&
 				( page.getTitle() != null ) && ( page.getTitle().length() != 0 ) &&
 				( page.getContent() != null ) && ( page.getContent().length() != 0 ) &&
 				( page.getContentWithTags() != null ) );

@@ -9,7 +9,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -63,7 +62,6 @@ public class Indexer {
 			doc.add(new StringField(WebPage.URL, webPage.getUrl(), Field.Store.YES));
 			doc.add(new TextField(WebPage.TITLE, webPage.getTitle(), Field.Store.YES));
 			doc.add(new TextField(WebPage.CONTENT, webPage.getContent(), Field.Store.YES));
-			doc.add(new LongField(WebPage.INDEXING_DATE, webPage.getIndexingDate().getTimeInMillis(), Field.Store.YES));
 
 			writer.addDocument(doc);
 			pages++;

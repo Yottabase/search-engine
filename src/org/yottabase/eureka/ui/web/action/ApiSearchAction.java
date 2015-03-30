@@ -1,8 +1,6 @@
 package org.yottabase.eureka.ui.web.action;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,8 +28,6 @@ public class ApiSearchAction implements Action{
 	@Override
 	public void run(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		
 		String q =  request.getParameter("q");
 		if(q == null || q.length() == 0 ){
@@ -65,7 +61,6 @@ public class ApiSearchAction implements Action{
 			item.put("title", webPage.getTitle());
 			item.put("highlightedSnippet", webPage.getHighlightedSnippet());
 			item.put("url", webPage.getUrl());
-			item.put("date", df.format(webPage.getDate().getTime()));
 			
 			JSONArray skippedWords = new JSONArray(webPage.getSkippedWords().toArray());
 			item.put("skippedWords", skippedWords);
