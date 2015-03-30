@@ -7,9 +7,23 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.spell.Dictionary;
+import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
+import org.apache.lucene.search.suggest.Lookup;
+import org.apache.lucene.search.suggest.Lookup.LookupResult;
+import org.apache.lucene.search.suggest.analyzing.FreeTextSuggester;
+import org.apache.lucene.search.suggest.tst.TSTLookup;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
+import org.yottabase.eureka.core.WebPage;
 
 public class SearchSuggestion {
 	private Directory spellDir;
@@ -17,21 +31,30 @@ public class SearchSuggestion {
 	private float accuracy=0.8f;
 	
 	public List<String> autocomplete(String query) {
-		String autocompleteSuggest[] = null;
-		List<String> suggestions= new LinkedList<String>();
+		List<String> result = new ArrayList<String>();
+		
 		try {
-			spellDir = FSDirectory.open(new File(SearcherConfiguration.getDictionaryPath()));
-			spellChecker = new SpellChecker(spellDir);
-			spellChecker.setAccuracy(accuracy);
-			autocompleteSuggest=spellChecker.suggestSimilar(query, 10);
+			Lookup lookup = new TSTLookup();
+			Directory indexPathDir = FSDirectory.open(new File(SearcherConfiguration.getIndexPath()));
+			IndexReader ir = DirectoryReader.open(indexPathDir);
 			
+			Dictionary dictionary = new LuceneDictionary(ir, WebPage.CONTENT);
+			
+			lookup.build(dictionary);
+			
+			List<LookupResult> resultsList = lookup.lookup(query, false, 5);
+			
+			for(LookupResult lr : resultsList){
+				System.out.println(lr);
+				result.add(lr.key.toString());
+			}
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		Collections.addAll(suggestions,autocompleteSuggest);
 		
-		return suggestions;
+		return result;
+		
 	}
 	
 	public ArrayList<String> didYouMean(String queryString){
