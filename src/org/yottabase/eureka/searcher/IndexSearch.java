@@ -98,21 +98,17 @@ public class IndexSearch implements Searcher {
 		 * 
 		 */
 		
-		try {
-			if(hits.length > 0)
-				getMoreLikeThis(hits[0]);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		long endTimeQuery = System.currentTimeMillis();
-		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
+		/* related searches */
+		List<String> relatedSearches = new LinkedList<String>();
+		relatedSearches = getMoreLikeThis(hits[0], 5);
 		
 		/* suggestion */
 		SearchSuggestion suggestionEngine = new SearchSuggestion();
-		List<String >suggestions = suggestionEngine.didYouMean(queryStr);
+		List<String> suggestions = suggestionEngine.didYouMean(queryStr);
+		
+		/* stop query time */
+		long endTimeQuery = System.currentTimeMillis();
+		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
 		
 		/* Filling in the search result values */
@@ -120,8 +116,9 @@ public class IndexSearch implements Searcher {
 		searchResult.setPage( page );
 		searchResult.setItemsInPage( itemInPage );
 		searchResult.setQueryResponseTime( queryTime );
-		searchResult.setSuggestedSearches(suggestions);
+		searchResult.setSuggestedSearches( suggestions );
 		searchResult.setWebPages( webPagesList );
+		searchResult.setMoreLikeThis( relatedSearches );
 		// TODO set executed query to search result
 		return searchResult;
 	}
@@ -197,22 +194,31 @@ public class IndexSearch implements Searcher {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public String getMoreLikeThis(ScoreDoc hit) throws IOException, ParseException {
+	public List<String> getMoreLikeThis(ScoreDoc hit, int maxRelated) {
 		MoreLikeThis mlt = new MoreLikeThis(reader);
 		mlt.setAnalyzer(analyzer);
 		mlt.setFieldNames(new String[] { WebPage.CONTENT });
 		
-		String splitted = null;
+		List<String> related = new LinkedList<String>();
 		
-		Query query = mlt.like(hit.doc);
-		TopDocs topDocs = searcher.search(query,10);
-		
-		for (int i = 0; i < 5; i++) {
-			Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-			splitted = doc.get(WebPage.TITLE);
-			System.out.println("ricerche simili :  " + splitted);
+		try {
+			
+			Query query = mlt.like(hit.doc);
+			TopDocs topDocs = searcher.search(query, maxRelated);
+			ScoreDoc[] hits = topDocs.scoreDocs;
+			
+			for (int i = 0; i < hits.length; i++) {
+				Document doc = searcher.doc( hits[i].doc );
+				related.add( doc.get(WebPage.TITLE) );
+			}
+			
+			System.out.println(related);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return splitted;
+		
+		return related;
 	}
 	
 }

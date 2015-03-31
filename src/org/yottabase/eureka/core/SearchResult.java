@@ -40,9 +40,15 @@ public class SearchResult {
 	 */
 	private String executedQuery;
 	
+	/**
+	 * Suggerimenti di ricerche correlate
+	 */
+	private List<String> moreLikeThis;
+	
 	public SearchResult() {
 		this.webPages = new LinkedList<WebPageSearchResult>();
 		this.suggestedSearches = new LinkedList<String>();
+		this.moreLikeThis = new LinkedList<String>();
 	}
 
 	public Integer getItemsCount() {
@@ -101,12 +107,24 @@ public class SearchResult {
 		this.executedQuery = executedQuery;
 	}
 	
+	public List<String> getMoreLikeThis() {
+		return moreLikeThis;
+	}
+
+	public void setMoreLikeThis(List<String> moreLikeThis) {
+		this.moreLikeThis = moreLikeThis;
+	}
+
 	public boolean addWebSearchResult(WebPageSearchResult page) {
 		return this.webPages.add(page);
 	}
 	
 	public boolean addSuggestedSearch(String suggestedSearch) {
 		return this.suggestedSearches.add(suggestedSearch);
+	}
+	
+	public boolean addMoreLikeThis(String moreLikeThis) {
+		return this.moreLikeThis.add(moreLikeThis);
 	}
 
 }

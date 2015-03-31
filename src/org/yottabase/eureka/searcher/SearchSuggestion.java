@@ -75,19 +75,19 @@ public class SearchSuggestion {
 			 * se query è composta da più keywords
 			 */
 			if (queryString.contains(" ")) {
-			    boolean find=false;
+			    boolean found = false;
 			    
 			    String[] parts = queryString.split(" ");
 			   
 			    for (int i = 0; i < parts.length; i++) {
 					listSuggest = spellChecker.suggestSimilar(parts[i], 10);
 					if ( listSuggest.length > 0 ) {
-					    find =true;
+					    found = true;
 						similarWordsConcat += (listSuggest[listSuggest.length-1]);
 						similarWordsConcat += " ";
 					}
 				}
-			    if(find)
+			    if(found)
 			    	Collections.addAll(similarWords,similarWordsConcat);
 
 			} else{

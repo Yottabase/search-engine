@@ -10,7 +10,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -77,12 +76,16 @@ public class Indexer {
 		
 		while ( (webPage = iManager.getNextWebPage()) != null ) {
 			doc = new Document();
-			Field title=new TextField(WebPage.TITLE, webPage.getTitle(), Field.Store.YES);
+			
+			Field title = new TextField(WebPage.TITLE, webPage.getTitle(), Field.Store.YES);
+			Field content = new TextField(WebPage.CONTENT, webPage.getContent(), Field.Store.YES);
+			Field url = new StringField(WebPage.URL, webPage.getUrl(), Field.Store.YES);
 			title.setBoost(2f);
+			
+			doc.add(url);
 			doc.add(title);
-			doc.add(new StringField(WebPage.URL, webPage.getUrl(), Field.Store.YES));
-			doc.add(new TextField(WebPage.CONTENT, webPage.getContent(), Field.Store.YES));
-
+			doc.add(content);
+			
 			writer.addDocument(doc);
 			pages++;
 		}
@@ -107,8 +110,6 @@ public class Indexer {
 		end = System.currentTimeMillis();
 		time = (end - start) / 1000d;
 		System.out.println("Creation completed in " + time + " seconds.");
-
-		
 	}
 	
 }
