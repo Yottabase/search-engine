@@ -20,6 +20,18 @@ jQuery( document ).ready(function( $ ) {
 	});
 });
 
+/*** gestione click pulsante ***/
+jQuery( document ).ready(function( $ ) {
+	$('#search-button').on('click submit', function(event){
+		var q = $('#search-input').val();
+		clearResults();
+		if(q.length != 0){
+			performQuery(q);
+		}
+		event.preventDefault();
+	});
+});
+
 /*** autocompletamento ***/
 jQuery( document ).ready(function( $ ) {	
 
@@ -79,11 +91,16 @@ function performQuery(query, page){
 		//disegna nuovi blocchi
 		data.webPages.forEach(function(item){
 			
+			var url = item.url;
+			if (url.length > 90){
+				url = url.substring(0,90) + '...';
+			}
+			
 			//crea item di output
 			var resultBlock = webPageTemplate.clone();
 			resultBlock.find('.title a').text(item.title);
 			resultBlock.find('.snippet').html(item.highlightedSnippet);
-			resultBlock.find('.url a').text(item.url);
+			resultBlock.find('.url a').text(url);
 			resultBlock.find('a').prop('href',item.url);
 			resultsBlock.append(resultBlock);
 		});
@@ -91,7 +108,12 @@ function performQuery(query, page){
 		//aggiunge ricerche suggerite
 		if(data.suggestedSearch.length > 0){
 			data.suggestedSearch.forEach(function(item){
-				$('#suggested-search .words').append('<a href="#">'+item+'</a>');
+				$('#suggested-search .words').append($('<a href="#">'+item+'</a>').click(function(){
+					var query = $(this).text();
+					$('#search-input').val(query);
+					clearResults();
+					performQuery(query, 1);
+				}));
 			});
 			$('#suggested-search').show();
 		}
@@ -165,14 +187,38 @@ function drawPageNumbers(currentPage, itemsCount, itemsInPage){
 jQuery( document ).ready(function( $ ) {
 	if(annyang){
 		var commands = {
-		'ciao': function() { 
-			alert('Hello world!'); 
-		},
-		'cercami *query': function(query) {
-			console.log(query);
+			'ciao': function() { 
+				alert('Hello world!'); 
+			},
+			'cercami *query': function(query) {
+				
 				$('#search-input').val(query);
 				clearResults();
 				performQuery(query, 1);
+			},
+			'pagina :page': function(page) {
+				
+				var q = $('#search-input').val();
+				clearResults();
+				
+				if(q.length != 0){
+					performQuery(q, page);	
+				}
+			},
+			'scendi' : function(page) {
+				$('body').stop(true, false).animate({
+				      scrollTop: $(document).height() - $(window).height()
+				    }, 8000
+				);
+			},
+			'sali' : function(page) {
+				$('body').stop(true, false).animate({
+				      scrollTop: 0
+				    }, 8000
+				);
+			},
+			'ferma' : function(page) {
+				$('body').stop(true, false);
 			},
 		};
 		
