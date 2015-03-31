@@ -2,18 +2,21 @@ package org.yottabase.eureka.searcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
@@ -97,7 +100,7 @@ public class IndexSearch implements Searcher {
 		/* related searches */
 		List<String> relatedSearches = new LinkedList<String>();
 		
-		if(hits.length > 0) relatedSearches = getMoreLikeThis(hits[0], 5);
+		if(hits.length > 0) relatedSearches = getMoreLikeThis(queryStr, hits[0], 10);
 		
 		/* suggestion */
 		SearchSuggestion suggestionEngine = new SearchSuggestion();
@@ -188,26 +191,26 @@ public class IndexSearch implements Searcher {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public List<String> getMoreLikeThis(ScoreDoc hit, int maxRelated) {
+	public List<String> getMoreLikeThis(String queryStr, ScoreDoc hit, int maxRelated) {
 		MoreLikeThis mlt = new MoreLikeThis(reader);
 		mlt.setAnalyzer(analyzer);
 		mlt.setFieldNames(new String[] { WebPage.CONTENT });
 		
 		List<String> related = new LinkedList<String>();
+		Set<Term> terms = new HashSet<Term>();
 		
 		try {
 			
 			Query query = mlt.like(hit.doc);
-			TopDocs topDocs = searcher.search(query, maxRelated);
-			ScoreDoc[] hits = topDocs.scoreDocs;
+			query.extractTerms(terms);
 			
-			for (int i = 0; i < hits.length; i++) {
-				Document doc = searcher.doc( hits[i].doc );
-				related.add( doc.get(WebPage.TITLE) );
+			Iterator<Term> iter = terms.iterator();
+			int numTerms = Math.min(maxRelated, terms.size());
+			for (int i = 0; i < numTerms; i++) {
+				Term t = iter.next();
+				related.add(queryStr + " " + t.text());
 			}
-			
-			System.out.println(related);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
