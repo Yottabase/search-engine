@@ -7,7 +7,7 @@
 		<div id="brand">
 			<a href="search.do">
 			<img alt="" class="img-responsive center-block"
-				src="assets/images/brand.jpg"></a>
+				src="assets/images/eureka.png"></a>
 		</div>
 
 		<form>

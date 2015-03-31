@@ -36,22 +36,25 @@ body strong{
 	font-weight: normal;
 }
 
+#brand img{
+	width: 400px;
+}
 
 #brand{
-	padding-top: 20px;
+	padding-top: 60px;
 	height: 180px;
 }
 
 #brand.little{
 	padding-top: 0;
-	height : 95px;
+	width : 230px;
 	position : absolute;
 	top: 5px;
 }
 
 #brand.little img{
 	
-	height : 95px;
+	width : 230px;
 }
 
 
