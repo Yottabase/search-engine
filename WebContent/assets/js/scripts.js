@@ -206,13 +206,13 @@ jQuery( document ).ready(function( $ ) {
 				}
 			},
 			'scendi' : function(page) {
-				$('body').animate({
+				$('body').stop(true, false).animate({
 				      scrollTop: $(document).height() - $(window).height()
 				    }, 8000
 				);
 			},
 			'sali' : function(page) {
-				$('body').animate({
+				$('body').stop(true, false).animate({
 				      scrollTop: 0
 				    }, 8000
 				);
