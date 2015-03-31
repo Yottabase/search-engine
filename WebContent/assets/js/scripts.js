@@ -125,15 +125,17 @@ function performQuery(query, page){
 		
 		//aggiunge more like this
 		if(data.moreLikeThis.length > 0){
-			data.moreLikeThis.forEach(function(item){
+			data.moreLikeThis.forEach(function(item, index){
 				
 				var data = item;
 				
-				if (item.length > 80){
-					item = item.substring(0,80) + '...';
+				if (item.length > 33){
+					item = item.substring(0, 30) + '...';
 				}
+				var col = 'left';
+				if(index % 2 == 0) col='left'; else col='right';
 				
-				$('#more-like-this .words').append($('<a href="#"><i class="glyphicon glyphicon-search"></i> '+item+'</a>').data('data',data).click(function(){
+				$('#more-like-this').find('.' + col).find('.words').append($('<a href="#"><i class="glyphicon glyphicon-search"></i> '+item+'</a>').data('data',data).click(function(){
 					var query = $(this).data('data');
 					$('#search-input').val(query);
 					clearResults();
@@ -141,6 +143,7 @@ function performQuery(query, page){
 				}));
 			});
 			$('#more-like-this .words a').wrap('<li></li>');
+			$('#more-like-this .query').text(query);
 			$('#more-like-this').show();
 		}
 		
