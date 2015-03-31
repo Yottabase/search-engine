@@ -96,9 +96,14 @@ function performQuery(query, page){
 				url = url.substring(0,90) + '...';
 			}
 			
+			var title = item.title;
+			if (title.length > 150){
+				title = title.substring(0,150) + '...';
+			}
+			
 			//crea item di output
 			var resultBlock = webPageTemplate.clone();
-			resultBlock.find('.title a').text(item.title);
+			resultBlock.find('.title a').text(title);
 			resultBlock.find('.snippet').html(item.highlightedSnippet);
 			resultBlock.find('.url a').text(url);
 			resultBlock.find('a').prop('href',item.url);
@@ -116,6 +121,30 @@ function performQuery(query, page){
 				}));
 			});
 			$('#suggested-search').show();
+		}
+		
+		//aggiunge more like this
+		if(data.moreLikeThis.length > 0){
+			data.moreLikeThis.forEach(function(item, index){
+				
+				var data = item;
+				
+				if (item.length > 33){
+					item = item.substring(0, 30) + '...';
+				}
+				var col = 'left';
+				if(index % 2 == 0) col='left'; else col='right';
+				
+				$('#more-like-this').find('.' + col).find('.words').append($('<a href="#"><i class="glyphicon glyphicon-search"></i> '+item+'</a>').data('data',data).click(function(){
+					var query = $(this).data('data');
+					$('#search-input').val(query);
+					clearResults();
+					performQuery(query, 1);
+				}));
+			});
+			$('#more-like-this .words a').wrap('<li></li>');
+			$('#more-like-this .query').text(query);
+			$('#more-like-this').show();
 		}
 		
 		drawPageNumbers(page, data.itemsCount, data.itemsInPage)
@@ -153,6 +182,8 @@ function clearResults(){
 	resultsBlock.stop(true, true);
 	$('#suggested-search').hide();
 	$('#suggested-search .words').empty();
+	$('#more-like-this').hide();
+	$('#more-like-this .words').empty();
 	$('#pagination').empty().off();
 	
 	//aggiorna statistiche

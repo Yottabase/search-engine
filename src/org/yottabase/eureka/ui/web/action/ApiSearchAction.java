@@ -52,7 +52,8 @@ public class ApiSearchAction implements Action{
 		JSONArray suggestedSearch = new JSONArray(result.getSuggestedSearches().toArray());
 		json.put("suggestedSearch", suggestedSearch);
 		json.put("queryResponseTime", result.getQueryResponseTime());
-		
+		JSONArray moreLikeThis = new JSONArray(result.getMoreLikeThis().toArray());
+		json.put("moreLikeThis", moreLikeThis);
 		
 		JSONArray items = new JSONArray();
 		json.put("webPages", items);

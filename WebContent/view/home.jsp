@@ -41,6 +41,19 @@
 					<div id="results">
 						<!-- qui ci vanno i risultati -->
 					</div>
+					<div id="more-like-this" class="well">
+						<h4>Ricerche correlate a "<span class="query"></span>"</h4>
+						<div class="row">
+							<div class="col-md-6 left">
+								<ul class="words"></ul>	
+							</div>
+							<div class="col-md-6 right">
+								<ul class="words"></ul>	
+							</div>
+						</div>
+						
+						<!-- qui ci vanno le ricerche correlate -->
+					</div>
 				</div>
 			</div>
 			
