@@ -77,7 +77,7 @@ public class IndexSearch implements Searcher {
 			e.printStackTrace();
 		}
 
-		ScoreDoc[] hits = collector.topDocs((page-1)*itemInPage, page*itemInPage-1 ).scoreDocs;
+		ScoreDoc[] hits = collector.topDocs((page-1)*itemInPage, page*itemInPage ).scoreDocs;
 		List<WebPageSearchResult> webPagesList = new LinkedList<WebPageSearchResult>();
 		boolean doSnippet = !(queryStr.contains("\"") || queryStr.contains("?") || queryStr.contains("*"));
 		for (int i = 0; i < hits.length; i++) {
