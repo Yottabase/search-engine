@@ -4,8 +4,9 @@ public class SearcherConfiguration {
 	
 	
 	public static String getIndexPath(){
-		return "/Users/chri/git/searchengine/index";
+		return "index";
 	}
-	
-
+	public static String getDictionaryPath(){
+		return "dictionarySuggest";
+	}
 }

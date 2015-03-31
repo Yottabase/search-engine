@@ -18,8 +18,8 @@ public class ApiAutocompleteAction implements Action {
 	public Searcher getSearcher(){
 		Searcher searcher;
 		
-		 searcher = new org.yottabase.eureka.ui.web.stub.StubSearcher();
-		 //searcher = new org.yottabase.eureka.searcher.IndexSearch();
+		 //searcher = new org.yottabase.eureka.ui.web.stub.StubSearcher();
+		 searcher = new org.yottabase.eureka.searcher.IndexSearch();
 		
 		return searcher;
 	}

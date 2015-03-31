@@ -13,6 +13,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
@@ -24,6 +25,7 @@ import org.apache.lucene.search.highlight.TokenSources;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.yottabase.eureka.core.SearchResult;
@@ -81,8 +83,8 @@ public class IndexSearch implements Searcher {
 		for (int i = 0; i < hits.length; i++) {
 			try {
 				int id = hits[i].doc;
-				Document doc = searcher.doc(id);;
-	
+				Document doc = searcher.doc(id);
+				
 				WebPageSearchResult webPageSearchResult = 
 						documentToWebPageSearchResult(doc, query, id, WebPage.CONTENT, 3, doSnippet);
 				
@@ -92,6 +94,16 @@ public class IndexSearch implements Searcher {
 			}
 		}
 		
+		/* related searches */
+		List<String> relatedSearches = new LinkedList<String>();
+		
+		if(hits.length > 0) relatedSearches = getMoreLikeThis(hits[0], 5);
+		
+		/* suggestion */
+		SearchSuggestion suggestionEngine = new SearchSuggestion();
+		List<String> suggestions = suggestionEngine.didYouMean(queryStr);
+		
+		/* stop query time */
 		long endTimeQuery = System.currentTimeMillis();
 		double queryTime = (endTimeQuery - startTimeQuery) / 1000d;
 		
@@ -99,9 +111,10 @@ public class IndexSearch implements Searcher {
 		searchResult.setItemsCount( collector.getTotalHits() );
 		searchResult.setPage( page );
 		searchResult.setItemsInPage( itemInPage );
-//		searchResult.setSuggestedSearches( Suggest.spell(queryStr) );		// TODO I SUGGERIMENTI NON FUNZIONANO
 		searchResult.setQueryResponseTime( queryTime );
+		searchResult.setSuggestedSearches( suggestions );
 		searchResult.setWebPages( webPagesList );
+		searchResult.setMoreLikeThis( relatedSearches );
 		// TODO set executed query to search result
 		return searchResult;
 	}
@@ -163,8 +176,43 @@ public class IndexSearch implements Searcher {
 	
 	@Override
 	public List<String> autocomplete(String query) {
-
-		return null;
+		SearchSuggestion suggest = new SearchSuggestion();
+		List<String> suggestions = suggest.autocomplete(query);
+		return suggestions;
+	}
+	
+	/**
+	 * 
+	 * @param hit
+	 * @return
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public List<String> getMoreLikeThis(ScoreDoc hit, int maxRelated) {
+		MoreLikeThis mlt = new MoreLikeThis(reader);
+		mlt.setAnalyzer(analyzer);
+		mlt.setFieldNames(new String[] { WebPage.CONTENT });
+		
+		List<String> related = new LinkedList<String>();
+		
+		try {
+			
+			Query query = mlt.like(hit.doc);
+			TopDocs topDocs = searcher.search(query, maxRelated);
+			ScoreDoc[] hits = topDocs.scoreDocs;
+			
+			for (int i = 0; i < hits.length; i++) {
+				Document doc = searcher.doc( hits[i].doc );
+				related.add( doc.get(WebPage.TITLE) );
+			}
+			
+			System.out.println(related);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return related;
 	}
 	
 }
