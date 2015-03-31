@@ -96,9 +96,14 @@ function performQuery(query, page){
 				url = url.substring(0,90) + '...';
 			}
 			
+			var title = item.title;
+			if (title.length > 150){
+				title = title.substring(0,150) + '...';
+			}
+			
 			//crea item di output
 			var resultBlock = webPageTemplate.clone();
-			resultBlock.find('.title a').text(item.title);
+			resultBlock.find('.title a').text(title);
 			resultBlock.find('.snippet').html(item.highlightedSnippet);
 			resultBlock.find('.url a').text(url);
 			resultBlock.find('a').prop('href',item.url);
