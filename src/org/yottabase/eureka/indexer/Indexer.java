@@ -51,6 +51,7 @@ public class Indexer {
 		long start, end, pages;
 		double time;
 		
+		System.out.println("Index creation...\n");
 		
 		inputPaths = new LinkedList<String>();
 		inputPaths.add( args[0] );
@@ -68,9 +69,7 @@ public class Indexer {
 		spellChecker = new SpellChecker(spellDir);
 		analyzerSuggest = new KeywordAnalyzer();
 	    configToDict = new IndexWriterConfig(Version.LUCENE_47, analyzerSuggest);		
-
 	    
-		System.out.println("Index creation...\n");
 		pages = 0;
 		start = System.currentTimeMillis();
 		
