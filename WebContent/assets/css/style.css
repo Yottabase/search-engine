@@ -102,6 +102,17 @@ form{
 	margin-top: 30px;
 }
 
+#more-like-this{
+	display: none;
+}
+#more-like-this h4{
+	font-weight: bold;
+}
+#more-like-this ul{
+	list-style: none;
+	padding: 0;
+}
+
 
 /** typeahead **/
 span.twitter-typeahead .tt-dropdown-menu{
